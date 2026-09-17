@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hue & Occasion — Outfit Color Matcher</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f1e6;
+            color: #241f1a;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 30px;
+        }
+
+        header span {
+            color: #8f6a3a;
+        }
+
+        /* Progress */
+        .progress {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+
+        .step {
+            text-align: center;
+            color: #8a7f6d;
+            font-size: 13px;
+        }
+
+        .circle {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #fffdf9;
+            border: 2px solid #e4d9c6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto auto 6px;
+        }
+
+        .step.active .circle {
+            border-color: #b8894f;
+            background: #b8894f;
+            color: white;
+        }
+
+        /* Main card */
+        .card {
+            width: 90%;
+            max-width: 520px;
+            margin: 30px auto;
+            padding: 30px;
+            background: #fffdf9;
+            border: 1px solid #e4d9c6;
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(60, 45, 20, 0.08);
+        }
+
+        .eyebrow {
+            color: #8f6a3a;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            margin-bottom: 8px;
+        }
+
+        p {
+            color: #4a4238;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Form */
+        label {
+            display: block;
+            margin: 15px 0 6px;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e4d9c6;
+            border-radius: 9px;
+            background: #fffefb;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: 2px solid #b8894f;
+        }
+
+        /* Buttons */
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .primary {
+            background: #241f1a;
+            color: white;
+        }
+
+        .primary:hover {
+            background: #3a332a;
+        }
+
+        .secondary {
+            background: transparent;
+            color: #241f1a;
+            border: 1px solid #e4d9c6;
+        }
+
+        /* Decorative color wheel */
+        .color-wheel {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #b8894f,
+                #a85c56,
+                #3c5a4a,
+                #6e3b5c,
+                #c9a227,
+                #b8894f
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .color-wheel::after {
+            content: "";
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fffdf9;
+        }
+
+        /* Hide future sections for Day 1 */
+        .coming-soon {
+            margin-top: 25px;
+            padding: 15px;
+            background: #f3ede0;
+            border-radius: 10px;
+            text-align: center;
+            color: #8a7f6d;
+            font-size: 13px;
+        }
+
+        /* Mobile */
+        @media (max-width: 500px) {
+            .progress {
+                gap: 15px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            header h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Project Header -->
+    <header>
+        <h1>Hue & <span>Occasion</span></h1>
+    </header>
+
+    <!-- Progress Steps -->
+    <div class="progress">
+
+        <div class="step active">
+            <div class="circle">1</div>
+            Details
+        </div>
+
+        <div class="step">
+            <div class="circle">2</div>
+            Skin
+        </div>
+
+        <div class="step">
+            <div class="circle">3</div>
+            Decor
+        </div>
+
+        <div class="step">
+            <div class="circle">4</div>
+            Match
+        </div>
+
+    </div>
+
+    <!-- Main Section -->
+    <main>
+
+        <div class="card">
+
+            <!-- Color Wheel -->
+            <div class="color-wheel"></div>
+
+            <div class="eyebrow">
+                Hue & Occasion
+            </div>
+
+            <h2>Let's get your details</h2>
+
+            <p>
+                We'll use your details to personalize
+                your outfit color recommendations.
+            </p>
+
+            <!-- Name -->
+            <label for="name">
+                Full name
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                placeholder="e.g. Ananya Rao"
+            >
+
+            <!-- Email -->
+            <label for="email">
+                Email address
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="you@example.com"
+            >
+
+            <!-- Mobile -->
+            <label for="mobile">
+                Mobile number
+            </label>
+
+            <input
+                type="tel"
+                id="mobile"
+                placeholder="10-digit number"
+            >
+
+            <!-- Location -->
+            <label for="location">
+                Place / Location
+            </label>
+
+            <input
+                type="text"
+                id="location"
+                placeholder="City, Country"
+            >
+
+            <!-- Continue -->
+            <button class="primary">
+                Continue
+            </button>
+
+            <div class="coming-soon">
+                More personalization features will be added in the next stage.
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
