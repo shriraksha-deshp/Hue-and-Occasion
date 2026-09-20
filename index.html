@@ -1,270 +1,1234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Hue & Occasion — Outfit Color Matcher</title>
+<title>Hue & Occasion — Outfit Color Matcher</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f7f1e6;
-            color: #241f1a;
-            min-height: 100vh;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        /* Header */
-        header {
-            padding: 20px;
-            text-align: center;
-        }
+<style>
 
-        header h1 {
-            font-size: 30px;
-        }
+:root{
+    --gold:#b8894f;
+    --gold-deep:#8f6a3a;
+    --ink:#241f1a;
+    --cream:#f7f1e6;
+    --paper:#fffdf9;
+    --line:#e4d9c6;
+    --rose:#a85c56;
+    --forest:#3c5a4a;
+    --muted:#8a7f6d;
+    --danger:#a8433c;
+}
 
-        header span {
-            color: #8f6a3a;
-        }
+*{
+    box-sizing:border-box;
+}
 
-        /* Progress */
-        .progress {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin: 20px auto;
-            max-width: 600px;
-        }
+body{
+    margin:0;
+    font-family:'Manrope',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+}
 
-        .step {
-            text-align: center;
-            color: #8a7f6d;
-            font-size: 13px;
-        }
+h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    margin:0 0 6px;
+}
 
-        .circle {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: #fffdf9;
-            border: 2px solid #e4d9c6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: auto auto 6px;
-        }
+p{
+    line-height:1.55;
+    color:#4a4238;
+}
 
-        .step.active .circle {
-            border-color: #b8894f;
-            background: #b8894f;
-            color: white;
-        }
+/* =========================
+   ANIMATED BACKGROUND
+========================= */
 
-        /* Main card */
-        .card {
-            width: 90%;
-            max-width: 520px;
-            margin: 30px auto;
-            padding: 30px;
-            background: #fffdf9;
-            border: 1px solid #e4d9c6;
-            border-radius: 18px;
-            box-shadow: 0 15px 35px rgba(60, 45, 20, 0.08);
-        }
+.bg-blob{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(60px);
+    opacity:.35;
+    z-index:0;
+    pointer-events:none;
+    animation:float 16s ease-in-out infinite;
+}
 
-        .eyebrow {
-            color: #8f6a3a;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
+.bg-blob.b1{
+    width:340px;
+    height:340px;
+    background:var(--gold);
+    top:-120px;
+    left:-100px;
+    animation-duration:18s;
+}
 
-        h2 {
-            margin-bottom: 8px;
-        }
+.bg-blob.b2{
+    width:300px;
+    height:300px;
+    background:var(--rose);
+    bottom:-100px;
+    right:-80px;
+    animation-duration:22s;
+    animation-delay:-6s;
+}
 
-        p {
-            color: #4a4238;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
+.bg-blob.b3{
+    width:260px;
+    height:260px;
+    background:var(--forest);
+    top:40%;
+    right:-120px;
+    animation-duration:20s;
+    animation-delay:-3s;
+}
 
-        /* Form */
-        label {
-            display: block;
-            margin: 15px 0 6px;
-            font-size: 14px;
-        }
+@keyframes float{
+    0%,100%{
+        transform:translate(0,0) scale(1);
+    }
 
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e4d9c6;
-            border-radius: 9px;
-            background: #fffefb;
-            font-size: 14px;
-        }
+    33%{
+        transform:translate(20px,-30px) scale(1.08);
+    }
 
-        input:focus,
-        select:focus {
-            outline: 2px solid #b8894f;
-        }
+    66%{
+        transform:translate(-15px,20px) scale(.95);
+    }
+}
 
-        /* Buttons */
-        button {
-            width: 100%;
-            padding: 13px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 15px;
-        }
+/* =========================
+   FLOATING PARTICLES
+========================= */
 
-        .primary {
-            background: #241f1a;
-            color: white;
-        }
+.particle-layer{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:0;
+}
 
-        .primary:hover {
-            background: #3a332a;
-        }
+.particle{
+    position:absolute;
+    bottom:-20px;
+    border-radius:50%;
+    opacity:.5;
+    animation:drift linear infinite;
+}
 
-        .secondary {
-            background: transparent;
-            color: #241f1a;
-            border: 1px solid #e4d9c6;
-        }
+@keyframes drift{
 
-        /* Decorative color wheel */
-        .color-wheel {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            background: conic-gradient(
-                #b8894f,
-                #a85c56,
-                #3c5a4a,
-                #6e3b5c,
-                #c9a227,
-                #b8894f
-            );
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    0%{
+        transform:translateY(0) translateX(0);
+        opacity:0;
+    }
 
-        .color-wheel::after {
-            content: "";
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #fffdf9;
-        }
+    10%{
+        opacity:.55;
+    }
 
-        /* Hide future sections for Day 1 */
-        .coming-soon {
-            margin-top: 25px;
-            padding: 15px;
-            background: #f3ede0;
-            border-radius: 10px;
-            text-align: center;
-            color: #8a7f6d;
-            font-size: 13px;
-        }
+    90%{
+        opacity:.4;
+    }
 
-        /* Mobile */
-        @media (max-width: 500px) {
-            .progress {
-                gap: 15px;
-            }
+    100%{
+        transform:
+        translateY(-110vh)
+        translateX(var(--drift-x,30px));
+        opacity:0;
+    }
+}
 
-            .card {
-                padding: 22px;
-            }
+/* =========================
+   TOP BAR
+========================= */
 
-            header h1 {
-                font-size: 25px;
-            }
-        }
-    </style>
+.topbar{
+    display:none;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 24px;
+    max-width:640px;
+    margin:auto;
+    position:relative;
+    z-index:5;
+}
+
+.topbar.show{
+    display:flex;
+}
+
+.brand{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:18px;
+}
+
+.brand span{
+    color:var(--gold-deep);
+}
+
+.who{
+    font-size:13px;
+    color:var(--muted);
+}
+
+.logout-link{
+    background:none;
+    border:none;
+    color:var(--rose);
+    font-size:13px;
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+/* =========================
+   STEPPER
+========================= */
+
+.stepper-wrap{
+    max-width:520px;
+    margin:16px auto 0;
+    padding:0 28px;
+    position:relative;
+    z-index:2;
+}
+
+.stepper{
+    display:flex;
+    justify-content:space-between;
+    position:relative;
+}
+
+.stepper::before{
+    content:'';
+    position:absolute;
+    top:17px;
+    left:17px;
+    right:17px;
+    height:3px;
+    background:var(--line);
+    border-radius:3px;
+}
+
+.stepper-fill-line{
+    position:absolute;
+    top:17px;
+    left:17px;
+    height:3px;
+    width:0;
+    background:linear-gradient(
+        90deg,
+        var(--gold-deep),
+        var(--gold)
+    );
+    border-radius:3px;
+    transition:width .6s ease;
+}
+
+.step-node{
+    position:relative;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+}
+
+.step-circle{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:var(--paper);
+    border:2px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.3s;
+}
+
+.step-circle svg{
+    width:16px;
+    height:16px;
+    stroke:var(--muted);
+    fill:none;
+    stroke-width:2;
+}
+
+.step-node.done .step-circle{
+    background:var(--forest);
+    border-color:var(--forest);
+}
+
+.step-node.done .step-circle svg{
+    stroke:white;
+}
+
+.step-node.active .step-circle{
+    border-color:var(--gold-deep);
+    transform:scale(1.12);
+    animation:stepPulse 1.6s infinite;
+}
+
+.step-node.active .step-circle svg{
+    stroke:var(--gold-deep);
+}
+
+@keyframes stepPulse{
+
+    0%,100%{
+        box-shadow:0 0 0 0 rgba(184,137,79,.35);
+    }
+
+    50%{
+        box-shadow:0 0 0 7px rgba(184,137,79,0);
+    }
+}
+
+.step-label{
+    font-size:10.5px;
+    color:var(--muted);
+}
+
+.step-node.active .step-label{
+    color:var(--gold-deep);
+    font-weight:700;
+}
+
+.step-node.done .step-label{
+    color:var(--forest);
+}
+
+/* =========================
+   PAGE TRANSITIONS
+========================= */
+
+.page{
+    opacity:0;
+    transform:translateY(14px);
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+
+    display:none;
+    padding:10px 20px 60px;
+    position:relative;
+    z-index:1;
+}
+
+.page.active{
+    display:block;
+}
+
+.page.enter{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.page.enter .card{
+    animation:cardPop .5s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes cardPop{
+
+    0%{
+        transform:scale(.92) translateY(16px);
+        opacity:0;
+    }
+
+    100%{
+        transform:scale(1) translateY(0);
+        opacity:1;
+    }
+}
+
+/* =========================
+   CARD
+========================= */
+
+.card{
+    background:var(--paper);
+    max-width:520px;
+    margin:20px auto;
+    padding:32px 28px;
+    border-radius:18px;
+    border:1px solid var(--line);
+    box-shadow:0 18px 40px rgba(60,45,20,.08);
+}
+
+.eyebrow{
+    font-size:13px;
+    color:var(--gold-deep);
+    margin-bottom:4px;
+}
+
+label{
+    display:block;
+    font-size:13px;
+    color:#5b5346;
+    margin:14px 0 6px;
+}
+
+input[type=text],
+input[type=email],
+input[type=tel],
+select{
+    width:100%;
+    padding:11px 12px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    background:#fffefb;
+    font-size:15px;
+    font-family:'Manrope',sans-serif;
+    color:var(--ink);
+}
+
+input:focus,
+select:focus{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+button.primary{
+    width:100%;
+    padding:13px;
+    margin-top:22px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:15px;
+    font-family:'Manrope',sans-serif;
+    background:var(--ink);
+    color:var(--paper);
+    transition:.2s;
+}
+
+button.primary:hover{
+    transform:translateY(-1px);
+    background:#3a332a;
+}
+
+button.primary:disabled{
+    background:#c9c1b3;
+    cursor:not-allowed;
+    animation:none;
+}
+
+button.primary:not(:disabled){
+    animation:ctaBreathe 2.6s ease-in-out infinite;
+}
+
+@keyframes ctaBreathe{
+
+    0%,100%{
+        box-shadow:0 0 0 0 rgba(184,137,79,0);
+    }
+
+    50%{
+        box-shadow:0 6px 18px rgba(184,137,79,.28);
+    }
+}
+
+button.ghost{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:transparent;
+    cursor:pointer;
+    font-weight:600;
+    font-size:14px;
+    font-family:'Manrope',sans-serif;
+    color:var(--ink);
+}
+
+button.ghost:hover{
+    background:#f1e9d8;
+}
+
+/* =========================
+   HERO COLOR WHEEL
+========================= */
+
+.hero-wheel{
+    width:92px;
+    height:92px;
+    margin:0 auto 14px;
+    display:block;
+    animation:heroSpin 26s linear infinite;
+}
+
+@keyframes heroSpin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+/* =========================
+   OTP
+========================= */
+
+.verify-row{
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+}
+
+.verify-row input{
+    flex:1;
+}
+
+.btn-verify{
+    white-space:nowrap;
+    padding:11px 14px;
+    border-radius:9px;
+    border:1px solid var(--gold-deep);
+    background:transparent;
+    color:var(--gold-deep);
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    font-family:'Manrope',sans-serif;
+}
+
+.btn-verify:hover{
+    background:#f3e9d5;
+}
+
+.btn-verify:disabled{
+    border-color:var(--line);
+    color:var(--muted);
+    cursor:not-allowed;
+}
+
+.btn-verify.verified{
+    border-color:var(--forest);
+    color:var(--forest);
+    background:#e7efe9;
+}
+
+.mobile-combo{
+    display:flex;
+    gap:8px;
+    flex:1;
+}
+
+.mobile-combo select{
+    flex:0 0 108px;
+}
+
+.otp-panel{
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transition:
+        max-height .35s ease,
+        opacity .3s ease,
+        margin .35s ease;
+}
+
+.otp-panel.open{
+    max-height:170px;
+    opacity:1;
+    margin-top:10px;
+}
+
+.otp-boxes{
+    display:flex;
+    gap:7px;
+}
+
+.otp-boxes input{
+    width:40px;
+    height:46px;
+    text-align:center;
+    padding:0;
+    font-size:18px;
+    font-weight:700;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:#fffefb;
+    animation:popIn .3s ease backwards;
+}
+
+.otp-boxes input:nth-child(1){animation-delay:.02s}
+.otp-boxes input:nth-child(2){animation-delay:.07s}
+.otp-boxes input:nth-child(3){animation-delay:.12s}
+.otp-boxes input:nth-child(4){animation-delay:.17s}
+.otp-boxes input:nth-child(5){animation-delay:.22s}
+.otp-boxes input:nth-child(6){animation-delay:.27s}
+
+@keyframes popIn{
+
+    from{
+        opacity:0;
+        transform:scale(.7);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+.otp-boxes input.shake{
+    animation:shake .35s;
+    border-color:var(--danger);
+}
+
+@keyframes shake{
+
+    0%,100%{
+        transform:translateX(0);
+    }
+
+    25%{
+        transform:translateX(-5px);
+    }
+
+    75%{
+        transform:translateX(5px);
+    }
+}
+
+.otp-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:8px;
+    font-size:12px;
+    color:var(--muted);
+}
+
+.otp-meta button{
+    background:none;
+    border:none;
+    color:var(--gold-deep);
+    font-size:12px;
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+.otp-meta button:disabled{
+    color:#c4bba9;
+    cursor:not-allowed;
+    text-decoration:none;
+}
+
+.otp-confirm{
+    width:100%;
+    margin-top:10px;
+    padding:9px;
+    border-radius:8px;
+    border:none;
+    background:var(--forest);
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.verified-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    font-size:12px;
+    color:var(--forest);
+    font-weight:700;
+    margin-left:8px;
+}
+
+.check-draw{
+    width:13px;
+    height:13px;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--ink);
+    color:var(--paper);
+    padding:12px 18px;
+    border-radius:10px;
+    font-size:13.5px;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+    opacity:0;
+    pointer-events:none;
+    transition:.3s;
+    z-index:50;
+    max-width:90vw;
+    text-align:center;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+.toast strong{
+    color:var(--gold);
+}
+
+/* =========================
+   ERROR
+========================= */
+
+.error-text{
+    color:var(--danger);
+    font-size:13px;
+    margin-top:10px;
+    display:none;
+}
+
+.error-text.show{
+    display:block;
+}
+
+/* =========================
+   SKIN SWATCHES
+========================= */
+
+.section-label{
+    font-size:13px;
+    font-weight:700;
+    color:#5b5346;
+    margin:22px 0 10px;
+}
+
+.swatch-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+}
+
+.swatch-grid.tone-3{
+    grid-template-columns:repeat(3,1fr);
+}
+
+.swatch-chip{
+    aspect-ratio:1;
+    border-radius:10px;
+    cursor:pointer;
+    border:2px solid rgba(0,0,0,.06);
+    position:relative;
+    transition:.15s;
+    animation:popIn .3s ease backwards;
+}
+
+.swatch-chip:hover{
+    transform:translateY(-4px) scale(1.04);
+}
+
+.swatch-chip.active{
+    box-shadow:
+        0 0 0 3px var(--paper),
+        0 0 0 5px var(--gold);
+    animation:selectPulse .35s ease;
+}
+
+@keyframes selectPulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    45%{
+        transform:scale(1.18);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+.swatch-caption{
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+    margin-top:6px;
+}
+
+/* =========================
+   UPLOAD
+========================= */
+
+.upload-box{
+    border:1.5px dashed #c9bda3;
+    padding:26px 16px;
+    border-radius:12px;
+    margin:16px 0;
+    cursor:pointer;
+    text-align:center;
+    color:#6b6152;
+    font-size:14px;
+    background:#fbf7ef;
+    transition:.15s;
+}
+
+.upload-box:hover{
+    border-color:var(--gold);
+    background:#f7f0de;
+}
+
+.upload-box strong{
+    color:var(--ink);
+}
+
+.thumb-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:14px;
+}
+
+.thumb{
+    position:relative;
+    border-radius:10px;
+    overflow:hidden;
+    aspect-ratio:1;
+    background:#eee;
+    animation:thumbIn .35s ease backwards;
+}
+
+@keyframes thumbIn{
+
+    from{
+        opacity:0;
+        transform:translateY(10px) scale(.9);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+.thumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.thumb button{
+    position:absolute;
+    top:4px;
+    right:4px;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    border:none;
+    background:rgba(20,15,10,.65);
+    color:white;
+    font-size:13px;
+    cursor:pointer;
+}
+
+/* =========================
+   LOADER
+========================= */
+
+.loading-row{
+    display:none;
+    align-items:center;
+    gap:10px;
+    margin-top:16px;
+    font-size:14px;
+    color:var(--muted);
+}
+
+.loading-row.show{
+    display:flex;
+}
+
+.mix-loader{
+    display:flex;
+    gap:6px;
+}
+
+.mix-loader span{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    display:inline-block;
+    animation:mixBounce 1s ease-in-out infinite;
+}
+
+.mix-loader span:nth-child(1){
+    background:var(--gold);
+}
+
+.mix-loader span:nth-child(2){
+    background:var(--rose);
+    animation-delay:.15s;
+}
+
+.mix-loader span:nth-child(3){
+    background:var(--forest);
+    animation-delay:.3s;
+}
+
+@keyframes mixBounce{
+
+    0%,80%,100%{
+        transform:translateY(0) scale(.85);
+        opacity:.6;
+    }
+
+    40%{
+        transform:translateY(-8px) scale(1.05);
+        opacity:1;
+    }
+}
+
+/* =========================
+   WELCOME MODAL
+========================= */
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(36,31,26,.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:80;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+}
+
+.modal-overlay.show{
+    opacity:1;
+    pointer-events:auto;
+}
+
+.modal-box{
+    background:var(--paper);
+    border-radius:18px;
+    padding:32px 28px;
+    max-width:320px;
+    text-align:center;
+    transform:scale(.8) translateY(10px);
+    opacity:0;
+    transition:.4s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 25px 60px rgba(0,0,0,.3);
+}
+
+.modal-overlay.show .modal-box{
+    transform:scale(1) translateY(0);
+    opacity:1;
+}
+
+.modal-icon{
+    width:56px;
+    height:56px;
+    margin:0 auto 14px;
+    border-radius:50%;
+    background:#e7efe9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.modal-icon svg{
+    width:28px;
+    height:28px;
+    stroke:var(--forest);
+    stroke-width:2.4;
+    fill:none;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:420px){
+
+    .card{
+        padding:24px 18px;
+    }
+
+    .swatch-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .otp-boxes input{
+        width:34px;
+        height:42px;
+        font-size:16px;
+    }
+
+    .stepper-wrap{
+        padding:0 12px;
+    }
+
+    .step-label{
+        font-size:9.5px;
+    }
+
+}
+
+</style>
 </head>
 
 <body>
 
-    <!-- Project Header -->
-    <header>
-        <h1>Hue & <span>Occasion</span></h1>
-    </header>
+<!-- ANIMATED BACKGROUND -->
+<div class="bg-blob b1"></div>
+<div class="bg-blob b2"></div>
+<div class="bg-blob b3"></div>
 
-    <!-- Progress Steps -->
-    <div class="progress">
+<div class="particle-layer" id="particleLayer"></div>
 
-        <div class="step active">
-            <div class="circle">1</div>
-            Details
+<!-- STEPPER -->
+<div class="stepper-wrap">
+
+    <div class="stepper">
+
+        <div class="stepper-fill-line" id="stepperFillLine"></div>
+
+        <div class="step-node" id="step-1">
+
+            <div class="step-circle">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+                </svg>
+            </div>
+
+            <span class="step-label">Details</span>
+
         </div>
 
-        <div class="step">
-            <div class="circle">2</div>
-            Skin
+
+        <div class="step-node" id="step-2">
+
+            <div class="step-circle">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 3a9 9 0 000 18 4 4 0 000-8 2 2 0 010-4 4 4 0 000-6z"/>
+                </svg>
+            </div>
+
+            <span class="step-label">Skin</span>
+
         </div>
 
-        <div class="step">
-            <div class="circle">3</div>
-            Decor
+
+        <div class="step-node" id="step-3">
+
+            <div class="step-circle">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="14" rx="2"/>
+                    <circle cx="8.5" cy="9.5" r="1.5"/>
+                    <path d="M21 16l-5-5-4 4-2-2-5 5"/>
+                </svg>
+            </div>
+
+            <span class="step-label">Decor</span>
+
         </div>
 
-        <div class="step">
-            <div class="circle">4</div>
-            Match
+
+        <div class="step-node" id="step-4">
+
+            <div class="step-circle">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4z"/>
+                </svg>
+            </div>
+
+            <span class="step-label">Match</span>
+
         </div>
 
     </div>
 
-    <!-- Main Section -->
-    <main>
+</div>
 
-        <div class="card">
+<div class="toast" id="toast"></div>
 
-            <!-- Color Wheel -->
-            <div class="color-wheel"></div>
 
-            <div class="eyebrow">
-                Hue & Occasion
-            </div>
+<!-- WELCOME MODAL -->
 
-            <h2>Let's get your details</h2>
+<div class="modal-overlay" id="welcomeModal">
 
-            <p>
-                We'll use your details to personalize
-                your outfit color recommendations.
-            </p>
+    <div class="modal-box">
 
-            <!-- Name -->
-            <label for="name">
-                Full name
-            </label>
+        <div class="modal-icon">
 
-            <input
-                type="text"
-                id="name"
-                placeholder="e.g. Ananya Rao"
+            <svg viewBox="0 0 24 24">
+                <path d="M5 12l4.5 4.5L19 7"/>
+            </svg>
+
+        </div>
+
+        <h3>
+            Welcome,
+            <span id="modalName"></span>!
+        </h3>
+
+        <p>
+            Let's find your perfect outfit colors for the event.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- TOP BAR -->
+
+<div class="topbar" id="topbar">
+
+    <div class="brand">
+        Hue &amp; <span>Occasion</span>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;">
+
+        <span class="who">
+            Hi,
+            <span id="topbarName"></span>
+        </span>
+
+        <button class="logout-link" onclick="logout()">
+            Sign out
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     LOGIN PAGE
+========================= -->
+
+<div class="page active" id="loginPage">
+
+    <div class="card">
+
+        <!-- COLOR WHEEL -->
+
+        <svg class="hero-wheel" viewBox="0 0 100 100">
+
+            <circle
+                cx="50"
+                cy="50"
+                r="46"
+                fill="none"
+                stroke="#e4d9c6"
+                stroke-width="1"
+            />
+
+            <path
+                d="M50 50 L50 6 A44 44 0 0 1 88 28 Z"
+                fill="#b8894f"
+            />
+
+            <path
+                d="M50 50 L88 28 A44 44 0 0 1 88 72 Z"
+                fill="#a85c56"
+            />
+
+            <path
+                d="M50 50 L88 72 A44 44 0 0 1 50 94 Z"
+                fill="#8f6a3a"
+            />
+
+            <path
+                d="M50 50 L50 94 A44 44 0 0 1 12 72 Z"
+                fill="#3c5a4a"
+            />
+
+            <path
+                d="M50 50 L12 72 A44 44 0 0 1 12 28 Z"
+                fill="#6e3b5c"
+            />
+
+            <path
+                d="M50 50 L12 28 A44 44 0 0 1 50 6 Z"
+                fill="#c9a227"
+            />
+
+            <circle
+                cx="50"
+                cy="50"
+                r="14"
+                fill="#fffdf9"
+            />
+
+        </svg>
+
+
+        <div class="eyebrow">
+            Hue &amp; Occasion
+        </div>
+
+        <h2>
+            Let's get your details
+        </h2>
+
+        <p>
+            We'll use this to personalize your outfit color recommendations for the event.
+        </p>
+
+
+        <!-- NAME -->
+
+        <label for="name">
+            Full name
+        </label>
+
+        <input
+            type="text"
+            id="name"
+            placeholder="e.g. Ananya Rao"
+        >
+
+
+        <!-- EMAIL -->
+
+        <label for="email">
+
+            Email address
+
+            <span
+                class="verified-tag"
+                id="emailVerifiedTag"
+                style="display:none;"
             >
+                ✓ Verified
+            </span>
 
-            <!-- Email -->
-            <label for="email">
-                Email address
-            </label>
+        </label>
+
+
+        <div class="verify-row">
 
             <input
                 type="email"
@@ -272,40 +1236,1769 @@
                 placeholder="you@example.com"
             >
 
-            <!-- Mobile -->
-            <label for="mobile">
-                Mobile number
-            </label>
-
-            <input
-                type="tel"
-                id="mobile"
-                placeholder="10-digit number"
+            <button
+                type="button"
+                class="btn-verify"
+                id="emailVerifyBtn"
+                onclick="sendOtp('email')"
             >
-
-            <!-- Location -->
-            <label for="location">
-                Place / Location
-            </label>
-
-            <input
-                type="text"
-                id="location"
-                placeholder="City, Country"
-            >
-
-            <!-- Continue -->
-            <button class="primary">
-                Continue
+                Send OTP
             </button>
-
-            <div class="coming-soon">
-                More personalization features will be added in the next stage.
-            </div>
 
         </div>
 
-    </main>
+
+        <!-- EMAIL OTP -->
+
+        <div
+            class="otp-panel"
+            id="emailOtpPanel"
+        >
+
+            <div
+                class="otp-boxes"
+                id="emailOtpBoxes"
+            ></div>
+
+            <div class="otp-meta">
+
+                <span id="emailOtpTimerText">
+                    Code sent to your email
+                </span>
+
+                <button
+                    type="button"
+                    id="emailResendBtn"
+                    onclick="sendOtp('email')"
+                    disabled
+                >
+                    Resend
+                </button>
+
+            </div>
+
+            <button
+                type="button"
+                class="otp-confirm"
+                onclick="verifyOtp('email')"
+            >
+                Verify email
+            </button>
+
+        </div>
+
+
+        <!-- MOBILE -->
+
+        <label for="mobile">
+
+            Mobile number
+
+            <span
+                class="verified-tag"
+                id="mobileVerifiedTag"
+                style="display:none;"
+            >
+                ✓ Verified
+            </span>
+
+        </label>
+
+
+        <div class="verify-row">
+
+            <div class="mobile-combo">
+
+                <select id="countryCode">
+
+                    <option value="+91">
+                        🇮🇳 +91
+                    </option>
+
+                    <option value="+1">
+                        🇺🇸 +1
+                    </option>
+
+                    <option value="+44">
+                        🇬🇧 +44
+                    </option>
+
+                    <option value="+61">
+                        🇦🇺 +61
+                    </option>
+
+                    <option value="+971">
+                        🇦🇪 +971
+                    </option>
+
+                </select>
+
+                <input
+                    type="tel"
+                    id="mobile"
+                    placeholder="10-digit number"
+                    maxlength="10"
+                >
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn-verify"
+                id="mobileVerifyBtn"
+                onclick="sendOtp('mobile')"
+            >
+                Send OTP
+            </button>
+
+        </div>
+
+
+        <!-- MOBILE OTP -->
+
+        <div
+            class="otp-panel"
+            id="mobileOtpPanel"
+        >
+
+            <div
+                class="otp-boxes"
+                id="mobileOtpBoxes"
+            ></div>
+
+            <div class="otp-meta">
+
+                <span id="mobileOtpTimerText">
+                    Code sent to your mobile
+                </span>
+
+                <button
+                    type="button"
+                    id="mobileResendBtn"
+                    onclick="sendOtp('mobile')"
+                    disabled
+                >
+                    Resend
+                </button>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="otp-confirm"
+                onclick="verifyOtp('mobile')"
+            >
+                Verify mobile
+            </button>
+
+        </div>
+
+
+        <!-- LOCATION -->
+
+        <label for="location">
+            Place / location
+        </label>
+
+        <input
+            type="text"
+            id="location"
+            placeholder="City, Country"
+        >
+
+        <button
+            type="button"
+            class="hint-btn"
+            onclick="detectLocation()"
+            style="
+                background:none;
+                border:none;
+                color:var(--gold-deep);
+                font-size:12.5px;
+                cursor:pointer;
+                padding:4px 0;
+                text-decoration:underline;
+            "
+        >
+            Use my current location instead
+        </button>
+
+
+        <div
+            class="error-text"
+            id="loginError"
+        ></div>
+
+
+        <button
+            class="primary"
+            onclick="submitLogin()"
+        >
+            Continue
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SKIN PAGE
+========================= -->
+
+<div class="page" id="skinPage">
+
+    <div class="card">
+
+        <div class="eyebrow">
+            Step 1 of 3
+        </div>
+
+        <h2>
+            Your complexion
+        </h2>
+
+        <p>
+            Pick the two swatches closest to your natural skin.
+        </p>
+
+
+        <div class="section-label">
+            Depth
+        </div>
+
+        <div
+            class="swatch-grid"
+            id="depthGrid"
+        ></div>
+
+        <div
+            class="swatch-caption"
+            id="depthCaption"
+        >
+            &nbsp;
+        </div>
+
+
+        <div class="section-label">
+            Undertone
+        </div>
+
+        <div
+            class="swatch-grid tone-3"
+            id="undertoneGrid"
+        ></div>
+
+        <div
+            class="swatch-caption"
+            id="undertoneCaption"
+        >
+            &nbsp;
+        </div>
+
+
+        <button
+            class="primary"
+            id="skinContinueBtn"
+            onclick="goToUpload()"
+            disabled
+        >
+            Continue
+        </button>
+
+
+        <button
+            class="ghost"
+            onclick="goToPage('loginPage')"
+        >
+            Back
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     UPLOAD PAGE
+========================= -->
+
+<div class="page" id="uploadPage">
+
+    <div class="card">
+
+        <div class="eyebrow">
+            Step 2 of 3
+        </div>
+
+        <h2>
+            Event decor photos
+        </h2>
+
+        <p>
+            Upload photos of the venue, backdrop, or decor.
+            We'll use these later for color matching.
+        </p>
+
+
+        <div
+            class="upload-box"
+            onclick="document.getElementById('imgInput').click()"
+        >
+
+            <strong>
+                Click to upload
+            </strong>
+
+            — you can select multiple images
+
+            <input
+                type="file"
+                id="imgInput"
+                hidden
+                accept="image/*"
+                multiple
+            >
+
+        </div>
+
+
+        <div
+            class="thumb-grid"
+            id="thumbGrid"
+        ></div>
+
+
+        <div
+            class="error-text"
+            id="uploadError"
+        ></div>
+
+
+        <button
+            class="primary"
+            id="day3Button"
+            onclick="showDay3Message()"
+        >
+            Continue to color matching
+        </button>
+
+
+        <div
+            class="loading-row"
+            id="loadingRow"
+        >
+
+            <div class="mix-loader">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+            <span>
+                Preparing your photos…
+            </span>
+
+        </div>
+
+
+        <button
+            class="ghost"
+            onclick="goToPage('skinPage')"
+        >
+            Back
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let skinDepth = null;
+
+let skinUndertone = null;
+
+let decorFiles = [];
+
+
+/* =========================================================
+   OTP STATE
+========================================================= */
+
+const otpState = {
+
+    email:{
+        code:null,
+        verified:false,
+        timer:null
+    },
+
+    mobile:{
+        code:null,
+        verified:false,
+        timer:null
+    }
+
+};
+
+
+/* =========================================================
+   PAGE STEPS
+========================================================= */
+
+const PAGE_STEP = {
+
+    loginPage:1,
+
+    skinPage:2,
+
+    uploadPage:3,
+
+    resultsPage:4
+
+};
+
+
+/* =========================================================
+   SKIN OPTIONS
+========================================================= */
+
+const DEPTH_OPTIONS = [
+
+    {
+        key:'fair',
+        label:'Fair',
+        hex:'#f5d9c3'
+    },
+
+    {
+        key:'light',
+        label:'Light',
+        hex:'#e8bf9c'
+    },
+
+    {
+        key:'medium',
+        label:'Medium',
+        hex:'#c68863'
+    },
+
+    {
+        key:'tan',
+        label:'Tan',
+        hex:'#9a6238'
+    },
+
+    {
+        key:'deep',
+        label:'Deep',
+        hex:'#5c3a21'
+    }
+
+];
+
+
+const UNDERTONE_OPTIONS = [
+
+    {
+        key:'warm',
+        label:'Warm',
+        hex:'#e3b16a'
+    },
+
+    {
+        key:'cool',
+        label:'Cool',
+        hex:'#cfd9e6'
+    },
+
+    {
+        key:'neutral',
+        label:'Neutral',
+        hex:'#d7c7ae'
+    }
+
+];
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+window.onload = function(){
+
+    buildSwatchGrid(
+        'depthGrid',
+        DEPTH_OPTIONS,
+        onDepthPick
+    );
+
+    buildSwatchGrid(
+        'undertoneGrid',
+        UNDERTONE_OPTIONS,
+        onUndertonePick
+    );
+
+    spawnParticles();
+
+    goToPage('loginPage');
+
+};
+
+
+/* =========================================================
+   FLOATING PARTICLES
+========================================================= */
+
+function spawnParticles(){
+
+    const layer =
+        document.getElementById('particleLayer');
+
+    const colors = [
+        '#b8894f',
+        '#a85c56',
+        '#3c5a4a',
+        '#c9a227'
+    ];
+
+
+    for(let i=0;i<14;i++){
+
+        const p =
+            document.createElement('div');
+
+        p.className = 'particle';
+
+
+        const size =
+            4 + Math.random()*6;
+
+        p.style.width =
+            size + 'px';
+
+        p.style.height =
+            size + 'px';
+
+
+        p.style.left =
+            Math.random()*100 + 'vw';
+
+
+        p.style.background =
+            colors[
+                Math.floor(
+                    Math.random()*colors.length
+                )
+            ];
+
+
+        p.style.setProperty(
+            '--drift-x',
+            (Math.random()*80-40)+'px'
+        );
+
+
+        p.style.animationDuration =
+            (14+Math.random()*12)+'s';
+
+
+        p.style.animationDelay =
+            (Math.random()*14)+'s';
+
+
+        layer.appendChild(p);
+
+    }
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function goToPage(id){
+
+    document
+        .querySelectorAll('.page')
+        .forEach(page=>{
+
+            page.classList.remove(
+                'active',
+                'enter'
+            );
+
+        });
+
+
+    const target =
+        document.getElementById(id);
+
+
+    target.classList.add('active');
+
+
+    requestAnimationFrame(()=>{
+
+        target.classList.add('enter');
+
+    });
+
+
+    updateProgress(id);
+
+}
+
+
+function updateProgress(id){
+
+    const step =
+        PAGE_STEP[id] || 1;
+
+
+    const percentage =
+        ((step-1)/3)*100;
+
+
+    document
+        .getElementById('stepperFillLine')
+        .style.width =
+        percentage + '%';
+
+
+    for(let i=1;i<=4;i++){
+
+        const node =
+            document.getElementById(
+                'step-'+i
+            );
+
+
+        node.classList.toggle(
+            'done',
+            i < step
+        );
+
+
+        node.classList.toggle(
+            'active',
+            i === step
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+
+function showToast(message,duration){
+
+    const toast =
+        document.getElementById('toast');
+
+
+    toast.innerHTML = message;
+
+
+    toast.classList.add('show');
+
+
+    clearTimeout(toastTimer);
+
+
+    toastTimer =
+        setTimeout(()=>{
+
+            toast.classList.remove('show');
+
+        },duration || 4000);
+
+}
+
+
+/* =========================================================
+   OTP BOXES
+========================================================= */
+
+function buildOtpBoxes(containerId){
+
+    const container =
+        document.getElementById(containerId);
+
+
+    container.innerHTML = '';
+
+
+    for(let i=0;i<6;i++){
+
+        const input =
+            document.createElement('input');
+
+
+        input.type = 'text';
+
+        input.inputMode = 'numeric';
+
+        input.maxLength = 1;
+
+
+        input.addEventListener(
+            'input',
+            function(){
+
+                this.value =
+                    this.value.replace(
+                        /[^0-9]/g,
+                        ''
+                    );
+
+
+                if(
+                    this.value &&
+                    this.nextElementSibling
+                ){
+
+                    this.nextElementSibling.focus();
+
+                }
+
+            }
+        );
+
+
+        input.addEventListener(
+            'keydown',
+            function(event){
+
+                if(
+                    event.key === 'Backspace' &&
+                    !this.value &&
+                    this.previousElementSibling
+                ){
+
+                    this.previousElementSibling.focus();
+
+                }
+
+            }
+        );
+
+
+        container.appendChild(input);
+
+    }
+
+}
+
+
+/* =========================================================
+   GENERATE DEMO OTP
+========================================================= */
+
+function generateOtp(){
+
+    return String(
+        Math.floor(
+            100000 +
+            Math.random()*900000
+        )
+    );
+
+}
+
+
+/* =========================================================
+   SEND OTP
+========================================================= */
+
+function sendOtp(type){
+
+    const field =
+        type === 'email'
+        ? document.getElementById('email')
+        : document.getElementById('mobile');
+
+
+    /* EMAIL VALIDATION */
+
+    if(type === 'email'){
+
+        const validEmail =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+            .test(field.value.trim());
+
+
+        if(!validEmail){
+
+            showToast(
+                'Enter a valid email address first.'
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    /* MOBILE VALIDATION */
+
+    else{
+
+        if(
+            !/^\d{7,15}$/
+            .test(field.value.trim())
+        ){
+
+            showToast(
+                'Enter a valid mobile number first.'
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const code =
+        generateOtp();
+
+
+    otpState[type].code =
+        code;
+
+    otpState[type].verified =
+        false;
+
+
+    const panel =
+        document.getElementById(
+            type+'OtpPanel'
+        );
+
+
+    panel.classList.add('open');
+
+
+    buildOtpBoxes(
+        type+'OtpBoxes'
+    );
+
+
+    document
+        .getElementById(
+            type+'OtpBoxes'
+        )
+        .querySelector('input')
+        .focus();
+
+
+    /* SHOW DEMO OTP */
+
+    const destination =
+        type === 'email'
+        ? field.value.trim()
+        : document
+            .getElementById('countryCode')
+            .value
+            + ' '
+            + field.value.trim();
+
+
+    showToast(
+
+        'Demo OTP for ' +
+        destination +
+        ': <strong>' +
+        code +
+        '</strong>',
+
+        7000
+
+    );
+
+
+    startResendTimer(type);
+
+}
+
+
+/* =========================================================
+   RESEND TIMER
+========================================================= */
+
+function startResendTimer(type){
+
+    const resend =
+        document.getElementById(
+            type+'ResendBtn'
+        );
+
+
+    const timerText =
+        document.getElementById(
+            type+'OtpTimerText'
+        );
+
+
+    resend.disabled = true;
+
+
+    let seconds = 30;
+
+
+    timerText.innerText =
+        'Resend available in ' +
+        seconds +
+        's';
+
+
+    clearInterval(
+        otpState[type].timer
+    );
+
+
+    otpState[type].timer =
+        setInterval(()=>{
+
+            seconds--;
+
+
+            if(seconds <= 0){
+
+                clearInterval(
+                    otpState[type].timer
+                );
+
+
+                timerText.innerText =
+                    "Didn't get it?";
+
+
+                resend.disabled = false;
+
+            }
+
+            else{
+
+                timerText.innerText =
+                    'Resend available in ' +
+                    seconds +
+                    's';
+
+            }
+
+        },1000);
+
+}
+
+
+/* =========================================================
+   VERIFY OTP
+========================================================= */
+
+function verifyOtp(type){
+
+    const boxes =
+        Array.from(
+            document.querySelectorAll(
+                '#'+type+'OtpBoxes input'
+            )
+        );
+
+
+    const entered =
+        boxes
+        .map(box=>box.value)
+        .join('');
+
+
+    if(
+        entered.length < 6 ||
+        entered !== otpState[type].code
+    ){
+
+        boxes.forEach(box=>{
+
+            box.classList.add('shake');
+
+
+            setTimeout(()=>{
+
+                box.classList.remove('shake');
+
+            },350);
+
+        });
+
+
+        showToast(
+            "That code doesn't match — check again."
+        );
+
+
+        return;
+
+    }
+
+
+    otpState[type].verified =
+        true;
+
+
+    clearInterval(
+        otpState[type].timer
+    );
+
+
+    document
+        .getElementById(
+            type+'OtpPanel'
+        )
+        .classList.remove('open');
+
+
+    document
+        .getElementById(
+            type+'VerifiedTag'
+        )
+        .style.display =
+        'inline-flex';
+
+
+    const button =
+        document.getElementById(
+            type+'VerifyBtn'
+        );
+
+
+    button.innerText =
+        'Verified';
+
+
+    button.classList.add(
+        'verified'
+    );
+
+
+    button.disabled = true;
+
+
+    document
+        .getElementById(
+            type === 'email'
+            ? 'email'
+            : 'mobile'
+        )
+        .disabled = true;
+
+
+    if(type === 'mobile'){
+
+        document
+            .getElementById('countryCode')
+            .disabled = true;
+
+    }
+
+
+    showToast(
+        type === 'email'
+        ? 'Email verified ✓'
+        : 'Mobile number verified ✓',
+        2500
+    );
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+function submitLogin(){
+
+    const name =
+        document
+        .getElementById('name')
+        .value
+        .trim();
+
+
+    const email =
+        document
+        .getElementById('email')
+        .value
+        .trim();
+
+
+    const mobile =
+        document
+        .getElementById('mobile')
+        .value
+        .trim();
+
+
+    const location =
+        document
+        .getElementById('location')
+        .value
+        .trim();
+
+
+    const error =
+        document
+        .getElementById('loginError');
+
+
+    if(
+        !name ||
+        !email ||
+        !mobile ||
+        !location
+    ){
+
+        error.innerText =
+            'Please fill in every field.';
+
+        error.classList.add('show');
+
+        return;
+
+    }
+
+
+    if(!otpState.email.verified){
+
+        error.innerText =
+            'Please verify your email with the OTP.';
+
+        error.classList.add('show');
+
+        return;
+
+    }
+
+
+    if(!otpState.mobile.verified){
+
+        error.innerText =
+            'Please verify your mobile number with the OTP.';
+
+        error.classList.add('show');
+
+        return;
+
+    }
+
+
+    error.classList.remove('show');
+
+
+    const firstName =
+        name.split(' ')[0];
+
+
+    localStorage.setItem(
+
+        'outfitLogin',
+
+        JSON.stringify({
+
+            name:firstName,
+
+            fullName:name,
+
+            email:email,
+
+            mobile:mobile,
+
+            location:location,
+
+            savedAt:Date.now()
+
+        })
+
+    );
+
+
+    document
+        .getElementById('topbarName')
+        .innerText =
+        firstName;
+
+
+    document
+        .getElementById('topbar')
+        .classList.add('show');
+
+
+    showWelcomeModal(firstName);
+
+}
+
+
+/* =========================================================
+   WELCOME
+========================================================= */
+
+function showWelcomeModal(firstName){
+
+    document
+        .getElementById('modalName')
+        .innerText =
+        firstName;
+
+
+    const modal =
+        document.getElementById(
+            'welcomeModal'
+        );
+
+
+    modal.classList.add('show');
+
+
+    setTimeout(()=>{
+
+        modal.classList.remove('show');
+
+        goToPage('skinPage');
+
+    },1600);
+
+}
+
+
+/* =========================================================
+   LOCATION
+========================================================= */
+
+function detectLocation(){
+
+    if(!navigator.geolocation){
+
+        showToast(
+            'Location is not available in this browser.'
+        );
+
+        return;
+
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position){
+
+            const lat =
+                position.coords.latitude
+                .toFixed(3);
+
+
+            const lon =
+                position.coords.longitude
+                .toFixed(3);
+
+
+            document
+                .getElementById('location')
+                .value =
+                'Lat '+lat+
+                ', Lon '+lon;
+
+        },
+
+
+        function(){
+
+            showToast(
+                'Could not detect location. Please enter it manually.'
+            );
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function logout(){
+
+    localStorage.removeItem(
+        'outfitLogin'
+    );
+
+    location.reload();
+
+}
+
+
+/* =========================================================
+   BUILD SWATCHES
+========================================================= */
+
+function buildSwatchGrid(
+    containerId,
+    options,
+    onPick
+){
+
+    const grid =
+        document.getElementById(
+            containerId
+        );
+
+
+    grid.innerHTML = '';
+
+
+    options.forEach((option,index)=>{
+
+        const chip =
+            document.createElement('div');
+
+
+        chip.className =
+            'swatch-chip';
+
+
+        chip.style.background =
+            option.hex;
+
+
+        chip.style.animationDelay =
+            (index*.05)+'s';
+
+
+        chip.title =
+            option.label;
+
+
+        chip.onclick =
+            function(){
+
+                onPick(
+                    option,
+                    chip
+                );
+
+            };
+
+
+        grid.appendChild(chip);
+
+    });
+
+}
+
+
+/* =========================================================
+   DEPTH PICK
+========================================================= */
+
+function onDepthPick(
+    option,
+    chip
+){
+
+    document
+        .querySelectorAll(
+            '#depthGrid .swatch-chip'
+        )
+        .forEach(item=>{
+
+            item.classList.remove(
+                'active'
+            );
+
+        });
+
+
+    chip.classList.add('active');
+
+
+    skinDepth =
+        option;
+
+
+    document
+        .getElementById(
+            'depthCaption'
+        )
+        .innerText =
+        option.label;
+
+
+    checkSkinReady();
+
+}
+
+
+/* =========================================================
+   UNDERTONE PICK
+========================================================= */
+
+function onUndertonePick(
+    option,
+    chip
+){
+
+    document
+        .querySelectorAll(
+            '#undertoneGrid .swatch-chip'
+        )
+        .forEach(item=>{
+
+            item.classList.remove(
+                'active'
+            );
+
+        });
+
+
+    chip.classList.add('active');
+
+
+    skinUndertone =
+        option;
+
+
+    document
+        .getElementById(
+            'undertoneCaption'
+        )
+        .innerText =
+        option.label;
+
+
+    checkSkinReady();
+
+}
+
+
+/* =========================================================
+   CHECK SKIN
+========================================================= */
+
+function checkSkinReady(){
+
+    document
+        .getElementById(
+            'skinContinueBtn'
+        )
+        .disabled =
+        !(skinDepth && skinUndertone);
+
+}
+
+
+/* =========================================================
+   GO TO UPLOAD
+========================================================= */
+
+function goToUpload(){
+
+    goToPage(
+        'uploadPage'
+    );
+
+}
+
+
+/* =========================================================
+   IMAGE UPLOAD
+========================================================= */
+
+const imgInput =
+    document.getElementById(
+        'imgInput'
+    );
+
+
+imgInput.addEventListener(
+    'change',
+    async function(){
+
+        const error =
+            document.getElementById(
+                'uploadError'
+            );
+
+
+        const files =
+            Array.from(
+                imgInput.files
+            );
+
+
+        imgInput.value = '';
+
+
+        let skipped = 0;
+
+
+        for(const file of files){
+
+            if(
+                !file.type.startsWith(
+                    'image/'
+                )
+            ){
+
+                skipped++;
+
+                continue;
+
+            }
+
+
+            try{
+
+                const url =
+                    await readFileAsDataUrl(
+                        file
+                    );
+
+
+                decorFiles.push({
+
+                    file:file,
+
+                    url:url
+
+                });
+
+
+                renderThumbs();
+
+            }
+
+
+            catch(error){
+
+                skipped++;
+
+            }
+
+        }
+
+
+        if(decorFiles.length > 0){
+
+            error.classList.remove(
+                'show'
+            );
+
+        }
+
+
+        else if(skipped > 0){
+
+            error.innerText =
+                'Please select JPG, PNG, WEBP or another image file.';
+
+            error.classList.add(
+                'show'
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   READ IMAGE
+========================================================= */
+
+function readFileAsDataUrl(file){
+
+    return new Promise(
+        (resolve,reject)=>{
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                ()=>{
+                    resolve(
+                        reader.result
+                    );
+                };
+
+
+            reader.onerror =
+                ()=>{
+                    reject(
+                        new Error(
+                            'Could not read file'
+                        )
+                    );
+                };
+
+
+            reader.readAsDataURL(
+                file
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SHOW THUMBNAILS
+========================================================= */
+
+function renderThumbs(){
+
+    const grid =
+        document.getElementById(
+            'thumbGrid'
+        );
+
+
+    grid.innerHTML = '';
+
+
+    decorFiles.forEach(
+        (item,index)=>{
+
+            const thumb =
+                document.createElement(
+                    'div'
+                );
+
+
+            thumb.className =
+                'thumb';
+
+
+            thumb.style.animationDelay =
+                (index*.06)+'s';
+
+
+            const image =
+                document.createElement(
+                    'img'
+                );
+
+
+            image.src =
+                item.url;
+
+
+            const remove =
+                document.createElement(
+                    'button'
+                );
+
+
+            remove.innerText =
+                '✕';
+
+
+            remove.onclick =
+                function(){
+
+                    removeThumb(index);
+
+                };
+
+
+            thumb.appendChild(image);
+
+            thumb.appendChild(remove);
+
+            grid.appendChild(thumb);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   REMOVE IMAGE
+========================================================= */
+
+function removeThumb(index){
+
+    decorFiles.splice(
+        index,
+        1
+    );
+
+
+    renderThumbs();
+
+}
+
+
+/* =========================================================
+   DAY 2 → DAY 3 PLACEHOLDER
+========================================================= */
+
+function showDay3Message(){
+
+    const error =
+        document.getElementById(
+            'uploadError'
+        );
+
+
+    if(decorFiles.length === 0){
+
+        error.innerText =
+            'Please upload at least one decor photo first.';
+
+        error.classList.add(
+            'show'
+        );
+
+        return;
+
+    }
+
+
+    error.classList.remove(
+        'show'
+    );
+
+
+    showToast(
+        'Day 2 complete! 🎨 Color matching will be added on Day 3.',
+        5000
+    );
+
+}
+
+</script>
 
 </body>
 </html>
