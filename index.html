@@ -1,18 +1,13 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Hue & Occasion — Outfit Color Matcher</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-
 :root{
     --gold:#b8894f;
     --gold-deep:#8f6a3a;
@@ -25,338 +20,58 @@
     --muted:#8a7f6d;
     --danger:#a8433c;
 }
-
-*{
-    box-sizing:border-box;
-}
-
+ 
+*{box-sizing:border-box;}
+ 
 body{
     margin:0;
     font-family:'Manrope',sans-serif;
     background:var(--cream);
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
 }
-
+ 
 h1,h2,h3{
     font-family:'Fraunces',serif;
     font-weight:600;
     margin:0 0 6px;
+    letter-spacing:-0.01em;
 }
-
-p{
-    line-height:1.55;
-    color:#4a4238;
-}
-
-/* =========================
-   ANIMATED BACKGROUND
-========================= */
-
-.bg-blob{
-    position:fixed;
-    border-radius:50%;
-    filter:blur(60px);
-    opacity:.35;
-    z-index:0;
-    pointer-events:none;
-    animation:float 16s ease-in-out infinite;
-}
-
-.bg-blob.b1{
-    width:340px;
-    height:340px;
-    background:var(--gold);
-    top:-120px;
-    left:-100px;
-    animation-duration:18s;
-}
-
-.bg-blob.b2{
-    width:300px;
-    height:300px;
-    background:var(--rose);
-    bottom:-100px;
-    right:-80px;
-    animation-duration:22s;
-    animation-delay:-6s;
-}
-
-.bg-blob.b3{
-    width:260px;
-    height:260px;
-    background:var(--forest);
-    top:40%;
-    right:-120px;
-    animation-duration:20s;
-    animation-delay:-3s;
-}
-
-@keyframes float{
-    0%,100%{
-        transform:translate(0,0) scale(1);
-    }
-
-    33%{
-        transform:translate(20px,-30px) scale(1.08);
-    }
-
-    66%{
-        transform:translate(-15px,20px) scale(.95);
-    }
-}
-
-/* =========================
-   FLOATING PARTICLES
-========================= */
-
-.particle-layer{
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-    pointer-events:none;
-    z-index:0;
-}
-
-.particle{
-    position:absolute;
-    bottom:-20px;
-    border-radius:50%;
-    opacity:.5;
-    animation:drift linear infinite;
-}
-
-@keyframes drift{
-
-    0%{
-        transform:translateY(0) translateX(0);
-        opacity:0;
-    }
-
-    10%{
-        opacity:.55;
-    }
-
-    90%{
-        opacity:.4;
-    }
-
-    100%{
-        transform:
-        translateY(-110vh)
-        translateX(var(--drift-x,30px));
-        opacity:0;
-    }
-}
-
-/* =========================
-   TOP BAR
-========================= */
-
+ 
+p{ line-height:1.55; color:#4a4238; }
+ 
 .topbar{
     display:none;
     justify-content:space-between;
     align-items:center;
     padding:16px 24px;
     max-width:640px;
-    margin:auto;
-    position:relative;
-    z-index:5;
+    margin:0 auto;
 }
-
-.topbar.show{
-    display:flex;
-}
-
+.topbar.show{ display:flex; }
 .brand{
     font-family:'Fraunces',serif;
     font-weight:600;
     font-size:18px;
+    letter-spacing:-0.01em;
 }
-
-.brand span{
-    color:var(--gold-deep);
-}
-
-.who{
-    font-size:13px;
-    color:var(--muted);
-}
-
+.brand span{ color:var(--gold-deep); }
+.who{ font-size:13px; color:var(--muted); }
 .logout-link{
-    background:none;
-    border:none;
-    color:var(--rose);
-    font-size:13px;
-    cursor:pointer;
-    text-decoration:underline;
+    background:none; border:none; color:var(--rose); font-size:13px;
+    font-family:'Manrope',sans-serif; cursor:pointer; padding:0; text-decoration:underline;
 }
-
-/* =========================
-   STEPPER
-========================= */
-
-.stepper-wrap{
-    max-width:520px;
-    margin:16px auto 0;
-    padding:0 28px;
-    position:relative;
-    z-index:2;
-}
-
-.stepper{
-    display:flex;
-    justify-content:space-between;
-    position:relative;
-}
-
-.stepper::before{
-    content:'';
-    position:absolute;
-    top:17px;
-    left:17px;
-    right:17px;
-    height:3px;
-    background:var(--line);
-    border-radius:3px;
-}
-
-.stepper-fill-line{
-    position:absolute;
-    top:17px;
-    left:17px;
-    height:3px;
-    width:0;
-    background:linear-gradient(
-        90deg,
-        var(--gold-deep),
-        var(--gold)
-    );
-    border-radius:3px;
-    transition:width .6s ease;
-}
-
-.step-node{
-    position:relative;
-    z-index:2;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:6px;
-}
-
-.step-circle{
-    width:34px;
-    height:34px;
-    border-radius:50%;
-    background:var(--paper);
-    border:2px solid var(--line);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:.3s;
-}
-
-.step-circle svg{
-    width:16px;
-    height:16px;
-    stroke:var(--muted);
-    fill:none;
-    stroke-width:2;
-}
-
-.step-node.done .step-circle{
-    background:var(--forest);
-    border-color:var(--forest);
-}
-
-.step-node.done .step-circle svg{
-    stroke:white;
-}
-
-.step-node.active .step-circle{
-    border-color:var(--gold-deep);
-    transform:scale(1.12);
-    animation:stepPulse 1.6s infinite;
-}
-
-.step-node.active .step-circle svg{
-    stroke:var(--gold-deep);
-}
-
-@keyframes stepPulse{
-
-    0%,100%{
-        box-shadow:0 0 0 0 rgba(184,137,79,.35);
-    }
-
-    50%{
-        box-shadow:0 0 0 7px rgba(184,137,79,0);
-    }
-}
-
-.step-label{
-    font-size:10.5px;
-    color:var(--muted);
-}
-
-.step-node.active .step-label{
-    color:var(--gold-deep);
-    font-weight:700;
-}
-
-.step-node.done .step-label{
-    color:var(--forest);
-}
-
-/* =========================
-   PAGE TRANSITIONS
-========================= */
-
+ 
 .page{
     opacity:0;
     transform:translateY(14px);
-    transition:
-        opacity .35s ease,
-        transform .35s ease;
-
+    transition:opacity 0.35s ease, transform 0.35s ease;
     display:none;
     padding:10px 20px 60px;
-    position:relative;
-    z-index:1;
 }
-
-.page.active{
-    display:block;
-}
-
-.page.enter{
-    opacity:1;
-    transform:translateY(0);
-}
-
-.page.enter .card{
-    animation:cardPop .5s cubic-bezier(.34,1.56,.64,1);
-}
-
-@keyframes cardPop{
-
-    0%{
-        transform:scale(.92) translateY(16px);
-        opacity:0;
-    }
-
-    100%{
-        transform:scale(1) translateY(0);
-        opacity:1;
-    }
-}
-
-/* =========================
-   CARD
-========================= */
-
+.page.active{ display:block; }
+.page.enter{ opacity:1; transform:translateY(0); }
+ 
 .card{
     background:var(--paper);
     max-width:520px;
@@ -364,26 +79,25 @@ p{
     padding:32px 28px;
     border-radius:18px;
     border:1px solid var(--line);
-    box-shadow:0 18px 40px rgba(60,45,20,.08);
+    box-shadow:0 18px 40px rgba(60,45,20,0.08);
 }
-
+ 
 .eyebrow{
     font-size:13px;
     color:var(--gold-deep);
     margin-bottom:4px;
 }
-
+ 
+.step-count{ font-size:13px; color:var(--muted); margin-bottom:18px; }
+ 
 label{
     display:block;
     font-size:13px;
     color:#5b5346;
     margin:14px 0 6px;
 }
-
-input[type=text],
-input[type=email],
-input[type=tel],
-select{
+ 
+input[type=text], input[type=email], input[type=tel], select#countrySelect, select#citySelect{
     width:100%;
     padding:11px 12px;
     border-radius:9px;
@@ -393,17 +107,22 @@ select{
     font-family:'Manrope',sans-serif;
     color:var(--ink);
 }
-
-input:focus,
-select:focus{
-    outline:2px solid var(--gold);
-    outline-offset:1px;
+select#countrySelect:disabled, select#citySelect:disabled{ color:var(--muted); background:#f3ede0; }
+input:focus{ outline:2px solid var(--gold); outline-offset:1px; }
+ 
+.field-row{ display:flex; gap:10px; }
+.field-row > div{ flex:1; }
+ 
+.hint-btn{
+    background:none;
+    border:none;
+    color:var(--gold-deep);
+    font-size:12.5px;
+    cursor:pointer;
+    padding:4px 0 0;
+    text-decoration:underline;
 }
-
-/* =========================
-   BUTTONS
-========================= */
-
+ 
 button.primary{
     width:100%;
     padding:13px;
@@ -416,35 +135,12 @@ button.primary{
     font-family:'Manrope',sans-serif;
     background:var(--ink);
     color:var(--paper);
-    transition:.2s;
+    transition:background 0.2s ease, transform 0.15s ease;
 }
-
-button.primary:hover{
-    transform:translateY(-1px);
-    background:#3a332a;
-}
-
-button.primary:disabled{
-    background:#c9c1b3;
-    cursor:not-allowed;
-    animation:none;
-}
-
-button.primary:not(:disabled){
-    animation:ctaBreathe 2.6s ease-in-out infinite;
-}
-
-@keyframes ctaBreathe{
-
-    0%,100%{
-        box-shadow:0 0 0 0 rgba(184,137,79,0);
-    }
-
-    50%{
-        box-shadow:0 6px 18px rgba(184,137,79,.28);
-    }
-}
-
+button.primary:hover{ background:#3a332a; }
+button.primary:active{ transform:scale(0.99); }
+button.primary:disabled{ background:#c9c1b3; cursor:not-allowed; }
+ 
 button.ghost{
     width:100%;
     padding:12px;
@@ -458,43 +154,217 @@ button.ghost{
     font-family:'Manrope',sans-serif;
     color:var(--ink);
 }
-
-button.ghost:hover{
-    background:#f1e9d8;
+button.ghost:hover{ background:#f1e9d8; }
+ 
+.error-text{
+    color:var(--danger);
+    font-size:13px;
+    margin-top:10px;
+    display:none;
 }
-
-/* =========================
-   HERO COLOR WHEEL
-========================= */
-
-.hero-wheel{
-    width:92px;
-    height:92px;
-    margin:0 auto 14px;
-    display:block;
-    animation:heroSpin 26s linear infinite;
+.error-text.show{ display:block; }
+ 
+/* ---- swatch selector grids ---- */
+.section-label{
+    font-size:13px;
+    font-weight:700;
+    text-transform:none;
+    color:#5b5346;
+    margin:22px 0 10px;
 }
-
-@keyframes heroSpin{
-    to{
-        transform:rotate(360deg);
-    }
+.swatch-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
 }
-
-/* =========================
-   OTP
-========================= */
-
-.verify-row{
+.swatch-grid.tone-3{ grid-template-columns:repeat(3,1fr); }
+ 
+.swatch-chip{
+    aspect-ratio:1;
+    border-radius:10px;
+    cursor:pointer;
+    border:2px solid rgba(0,0,0,0.06);
+    position:relative;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+}
+.swatch-chip:hover{ transform:translateY(-2px); }
+.swatch-chip.active{
+    box-shadow:0 0 0 3px var(--paper), 0 0 0 5px var(--gold);
+}
+.swatch-caption{
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+    margin-top:6px;
+}
+ 
+/* ---- upload ---- */
+.upload-box{
+    border:1.5px dashed #c9bda3;
+    padding:26px 16px;
+    border-radius:12px;
+    margin:16px 0;
+    cursor:pointer;
+    text-align:center;
+    color:#6b6152;
+    font-size:14px;
+    background:#fbf7ef;
+    transition:border-color 0.15s ease, background 0.15s ease;
+}
+.upload-box:hover{ border-color:var(--gold); background:#f7f0de; }
+.upload-box strong{ color:var(--ink); }
+ 
+.thumb-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:14px;
+}
+.thumb{
+    position:relative;
+    border-radius:10px;
+    overflow:hidden;
+    aspect-ratio:1;
+    background:#eee;
+}
+.thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.thumb button{
+    position:absolute;
+    top:4px; right:4px;
+    width:22px; height:22px;
+    border-radius:50%;
+    border:none;
+    background:rgba(20,15,10,0.65);
+    color:#fff;
+    font-size:13px;
+    line-height:1;
+    cursor:pointer;
+}
+ 
+.thumb.thumb-error{
+    background:#f3ede0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.thumb-error-msg{
+    font-size:10.5px;
+    color:var(--muted);
+    text-align:center;
+    padding:6px;
+    line-height:1.4;
+}
+.loading-row{
+    display:none;
+    align-items:center;
+    gap:10px;
+    margin-top:16px;
+    font-size:14px;
+    color:var(--muted);
+}
+.loading-row.show{ display:flex; }
+.spinner{
+    width:16px; height:16px;
+    border-radius:50%;
+    border:2px solid var(--line);
+    border-top-color:var(--gold-deep);
+    animation:spin 0.8s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+ 
+/* ---- results ---- */
+.result-block{ margin-top:6px; }
+.palette-row{
     display:flex;
     gap:8px;
-    align-items:flex-start;
+    margin:10px 0 4px;
+    flex-wrap:wrap;
 }
-
-.verify-row input{
-    flex:1;
+.mini-swatch{
+    width:34px; height:34px;
+    border-radius:8px;
+    border:1px solid rgba(0,0,0,0.08);
 }
-
+ 
+.match-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    margin-top:12px;
+    background:#fffefb;
+}
+.match-swatch{
+    width:52px; height:52px;
+    border-radius:50%;
+    border:1px solid rgba(0,0,0,0.08);
+    flex-shrink:0;
+}
+.match-info h3{ font-size:16px; margin-bottom:2px; }
+.match-info .hexcode{ font-size:12px; color:var(--muted); font-family:monospace; }
+.match-badge{
+    display:inline-block;
+    font-size:11px;
+    color:var(--forest);
+    background:#e7efe9;
+    padding:2px 8px;
+    border-radius:20px;
+    margin-top:4px;
+}
+ 
+.explain-box{
+    margin-top:20px;
+    padding:16px 18px;
+    background:#f3ede0;
+    border-radius:12px;
+    border-left:3px solid var(--gold-deep);
+}
+.explain-box p{ margin:0; font-size:14.5px; color:#463f33; }
+.explain-box .tag{
+    font-size:11.5px;
+    color:var(--gold-deep);
+    font-weight:700;
+    margin-bottom:6px;
+    display:block;
+}
+ 
+.disclaimer{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:18px;
+    text-align:center;
+}
+ 
+/* ---- animated ambient background ---- */
+.bg-blob{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(60px);
+    opacity:0.35;
+    z-index:0;
+    pointer-events:none;
+    animation:float 16s ease-in-out infinite;
+}
+.bg-blob.b1{ width:340px; height:340px; background:var(--gold); top:-120px; left:-100px; animation-duration:18s; }
+.bg-blob.b2{ width:300px; height:300px; background:var(--rose); bottom:-100px; right:-80px; animation-duration:22s; animation-delay:-6s; }
+.bg-blob.b3{ width:260px; height:260px; background:var(--forest); top:40%; right:-120px; animation-duration:20s; animation-delay:-3s; }
+@keyframes float{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    33%{ transform:translate(20px,-30px) scale(1.08); }
+    66%{ transform:translate(-15px,20px) scale(0.95); }
+}
+@media (prefers-reduced-motion: reduce){
+    .bg-blob{ animation:none; }
+}
+.topbar, .page{ position:relative; z-index:1; }
+ 
+/* (progress bar replaced by illustrated stepper below) */
+ 
+/* ---- verify field combo ---- */
+.verify-row{ display:flex; gap:8px; align-items:flex-start; }
+.verify-row input{ flex:1; }
 .btn-verify{
     white-space:nowrap;
     padding:11px 14px;
@@ -506,55 +376,43 @@ button.ghost:hover{
     font-size:13px;
     cursor:pointer;
     font-family:'Manrope',sans-serif;
+    transition:background 0.15s ease, transform 0.1s ease;
 }
-
-.btn-verify:hover{
-    background:#f3e9d5;
-}
-
-.btn-verify:disabled{
-    border-color:var(--line);
-    color:var(--muted);
-    cursor:not-allowed;
-}
-
+.btn-verify:hover{ background:#f3e9d5; }
+.btn-verify:active{ transform:scale(0.96); }
+.btn-verify:disabled{ border-color:var(--line); color:var(--muted); cursor:not-allowed; }
 .btn-verify.verified{
     border-color:var(--forest);
     color:var(--forest);
     background:#e7efe9;
+    cursor:default;
 }
-
-.mobile-combo{
-    display:flex;
-    gap:8px;
-    flex:1;
-}
-
+ 
+.mobile-combo{ display:flex; gap:8px; }
 .mobile-combo select{
     flex:0 0 108px;
+    padding:11px 6px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    background:#fffefb;
+    font-size:14px;
+    font-family:'Manrope',sans-serif;
+    color:var(--ink);
 }
-
+ 
 .otp-panel{
     max-height:0;
     overflow:hidden;
     opacity:0;
-    transition:
-        max-height .35s ease,
-        opacity .3s ease,
-        margin .35s ease;
+    transition:max-height 0.35s ease, opacity 0.3s ease, margin 0.35s ease;
+    margin-top:0;
 }
-
 .otp-panel.open{
-    max-height:170px;
+    max-height:160px;
     opacity:1;
     margin-top:10px;
 }
-
-.otp-boxes{
-    display:flex;
-    gap:7px;
-}
-
+.otp-boxes{ display:flex; gap:7px; }
 .otp-boxes input{
     width:40px;
     height:46px;
@@ -565,49 +423,13 @@ button.ghost:hover{
     border-radius:8px;
     border:1px solid var(--line);
     background:#fffefb;
-    animation:popIn .3s ease backwards;
 }
-
-.otp-boxes input:nth-child(1){animation-delay:.02s}
-.otp-boxes input:nth-child(2){animation-delay:.07s}
-.otp-boxes input:nth-child(3){animation-delay:.12s}
-.otp-boxes input:nth-child(4){animation-delay:.17s}
-.otp-boxes input:nth-child(5){animation-delay:.22s}
-.otp-boxes input:nth-child(6){animation-delay:.27s}
-
-@keyframes popIn{
-
-    from{
-        opacity:0;
-        transform:scale(.7);
-    }
-
-    to{
-        opacity:1;
-        transform:scale(1);
-    }
-}
-
-.otp-boxes input.shake{
-    animation:shake .35s;
-    border-color:var(--danger);
-}
-
+.otp-boxes input.shake{ animation:shake 0.35s; border-color:var(--danger); }
 @keyframes shake{
-
-    0%,100%{
-        transform:translateX(0);
-    }
-
-    25%{
-        transform:translateX(-5px);
-    }
-
-    75%{
-        transform:translateX(5px);
-    }
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-5px); }
+    75%{ transform:translateX(5px); }
 }
-
 .otp-meta{
     display:flex;
     justify-content:space-between;
@@ -616,22 +438,12 @@ button.ghost:hover{
     font-size:12px;
     color:var(--muted);
 }
-
 .otp-meta button{
-    background:none;
-    border:none;
-    color:var(--gold-deep);
-    font-size:12px;
-    cursor:pointer;
-    text-decoration:underline;
+    background:none; border:none; color:var(--gold-deep);
+    font-size:12px; cursor:pointer; text-decoration:underline; padding:0;
+    font-family:'Manrope',sans-serif;
 }
-
-.otp-meta button:disabled{
-    color:#c4bba9;
-    cursor:not-allowed;
-    text-decoration:none;
-}
-
+.otp-meta button:disabled{ color:#c4bba9; cursor:not-allowed; text-decoration:none; }
 .otp-confirm{
     width:100%;
     margin-top:10px;
@@ -639,11 +451,13 @@ button.ghost:hover{
     border-radius:8px;
     border:none;
     background:var(--forest);
-    color:white;
+    color:#fff;
     font-weight:700;
+    font-size:13px;
     cursor:pointer;
+    font-family:'Manrope',sans-serif;
 }
-
+ 
 .verified-tag{
     display:inline-flex;
     align-items:center;
@@ -653,16 +467,9 @@ button.ghost:hover{
     font-weight:700;
     margin-left:8px;
 }
-
-.check-draw{
-    width:13px;
-    height:13px;
-}
-
-/* =========================
-   TOAST
-========================= */
-
+.verified-tag svg{ width:13px; height:13px; }
+ 
+/* ---- toast ---- */
 .toast{
     position:fixed;
     bottom:24px;
@@ -673,2332 +480,1406 @@ button.ghost:hover{
     padding:12px 18px;
     border-radius:10px;
     font-size:13.5px;
-    box-shadow:0 12px 30px rgba(0,0,0,.25);
+    box-shadow:0 12px 30px rgba(0,0,0,0.25);
     opacity:0;
     pointer-events:none;
-    transition:.3s;
+    transition:opacity 0.3s ease, transform 0.3s ease;
     z-index:50;
     max-width:90vw;
-    text-align:center;
 }
-
 .toast.show{
     opacity:1;
     transform:translateX(-50%) translateY(0);
 }
-
-.toast strong{
-    color:var(--gold);
+.toast strong{ color:var(--gold); }
+ 
+/* ---- reveal / interaction animations ---- */
+.swatch-chip{ animation:popIn 0.3s ease backwards; }
+@keyframes popIn{
+    from{ opacity:0; transform:scale(0.7); }
+    to{ opacity:1; transform:scale(1); }
 }
-
-/* =========================
-   ERROR
-========================= */
-
-.error-text{
-    color:var(--danger);
-    font-size:13px;
-    margin-top:10px;
-    display:none;
-}
-
-.error-text.show{
-    display:block;
-}
-
-/* =========================
-   SKIN SWATCHES
-========================= */
-
-.section-label{
-    font-size:13px;
-    font-weight:700;
-    color:#5b5346;
-    margin:22px 0 10px;
-}
-
-.swatch-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:10px;
-}
-
-.swatch-grid.tone-3{
-    grid-template-columns:repeat(3,1fr);
-}
-
-.swatch-chip{
-    aspect-ratio:1;
-    border-radius:10px;
-    cursor:pointer;
-    border:2px solid rgba(0,0,0,.06);
-    position:relative;
-    transition:.15s;
-    animation:popIn .3s ease backwards;
-}
-
-.swatch-chip:hover{
-    transform:translateY(-4px) scale(1.04);
-}
-
 .swatch-chip.active{
-    box-shadow:
-        0 0 0 3px var(--paper),
-        0 0 0 5px var(--gold);
-    animation:selectPulse .35s ease;
+    animation:selectPulse 0.35s ease;
 }
-
 @keyframes selectPulse{
-
-    0%{
-        transform:scale(1);
-    }
-
-    45%{
-        transform:scale(1.18);
-    }
-
-    100%{
-        transform:scale(1);
-    }
+    0%{ transform:scale(1); }
+    45%{ transform:scale(1.18); }
+    100%{ transform:scale(1); }
 }
-
-.swatch-caption{
-    text-align:center;
-    font-size:12px;
-    color:var(--muted);
-    margin-top:6px;
-}
-
-/* =========================
-   UPLOAD
-========================= */
-
-.upload-box{
-    border:1.5px dashed #c9bda3;
-    padding:26px 16px;
-    border-radius:12px;
-    margin:16px 0;
-    cursor:pointer;
-    text-align:center;
-    color:#6b6152;
-    font-size:14px;
-    background:#fbf7ef;
-    transition:.15s;
-}
-
-.upload-box:hover{
-    border-color:var(--gold);
-    background:#f7f0de;
-}
-
-.upload-box strong{
-    color:var(--ink);
-}
-
-.thumb-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-top:14px;
-}
-
-.thumb{
-    position:relative;
-    border-radius:10px;
-    overflow:hidden;
-    aspect-ratio:1;
-    background:#eee;
-    animation:thumbIn .35s ease backwards;
-}
-
+ 
+.thumb{ animation:thumbIn 0.35s ease backwards; }
 @keyframes thumbIn{
-
-    from{
-        opacity:0;
-        transform:translateY(10px) scale(.9);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0) scale(1);
-    }
+    from{ opacity:0; transform:translateY(10px) scale(0.9); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
 }
-
-.thumb img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
+ 
+.match-card{ animation:cardIn 0.5s cubic-bezier(.2,.8,.3,1) backwards; }
+@keyframes cardIn{
+    from{ opacity:0; transform:translateX(-16px); }
+    to{ opacity:1; transform:translateX(0); }
 }
-
-.thumb button{
+.match-swatch{ animation:swatchGrow 0.5s ease backwards; }
+@keyframes swatchGrow{
+    from{ transform:scale(0); }
+    to{ transform:scale(1); }
+}
+ 
+.mini-swatch{ animation:thumbIn 0.4s ease backwards; }
+ 
+button.primary, .btn-verify, .otp-confirm, .upload-box{
+    -webkit-tap-highlight-color:transparent;
+}
+button.primary:not(:disabled):hover{ transform:translateY(-1px); }
+ 
+/* ---- stepper (replaces plain progress bar) ---- */
+.stepper-wrap{
+    max-width:520px;
+    margin:16px auto 0;
+    padding:0 28px;
+    position:relative;
+    z-index:1;
+}
+.stepper{
+    display:flex;
+    justify-content:space-between;
+    position:relative;
+}
+.stepper::before{
+    content:'';
     position:absolute;
-    top:4px;
-    right:4px;
-    width:22px;
-    height:22px;
-    border-radius:50%;
-    border:none;
-    background:rgba(20,15,10,.65);
-    color:white;
-    font-size:13px;
-    cursor:pointer;
+    top:17px; left:17px; right:17px;
+    height:3px;
+    background:var(--line);
+    border-radius:3px;
+    z-index:0;
 }
-
-/* =========================
-   LOADER
-========================= */
-
-.loading-row{
-    display:none;
+.stepper-fill-line{
+    position:absolute;
+    top:17px; left:17px;
+    height:3px;
+    width:0%;
+    background:linear-gradient(90deg, var(--gold-deep), var(--gold));
+    border-radius:3px;
+    z-index:1;
+    transition:width 0.6s cubic-bezier(.4,0,.2,1);
+}
+.step-node{
+    position:relative;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
     align-items:center;
-    gap:10px;
-    margin-top:16px;
-    font-size:14px;
-    color:var(--muted);
-}
-
-.loading-row.show{
-    display:flex;
-}
-
-.mix-loader{
-    display:flex;
     gap:6px;
 }
-
+.step-circle{
+    width:34px; height:34px;
+    border-radius:50%;
+    background:var(--paper);
+    border:2px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+.step-circle svg{ width:16px; height:16px; stroke:var(--muted); transition:stroke 0.3s ease; fill:none; stroke-width:2; }
+.step-node.done .step-circle{ background:var(--forest); border-color:var(--forest); }
+.step-node.done .step-circle svg{ stroke:#fff; }
+.step-node.active .step-circle{
+    border-color:var(--gold-deep);
+    transform:scale(1.12);
+    animation:stepPulse 1.6s ease-in-out infinite;
+}
+.step-node.active .step-circle svg{ stroke:var(--gold-deep); }
+@keyframes stepPulse{
+    0%,100%{ box-shadow:0 0 0 0 rgba(184,137,79,0.35); }
+    50%{ box-shadow:0 0 0 7px rgba(184,137,79,0); }
+}
+.step-label{ font-size:10.5px; color:var(--muted); }
+.step-node.active .step-label{ color:var(--gold-deep); font-weight:700; }
+.step-node.done .step-label{ color:var(--forest); }
+@media (prefers-reduced-motion: reduce){
+    .step-node.active .step-circle{ animation:none; }
+}
+ 
+/* ---- hero illustration ---- */
+.hero-wheel{
+    width:92px; height:92px;
+    margin:0 auto 14px;
+    display:block;
+    animation:heroSpin 26s linear infinite;
+}
+@media (prefers-reduced-motion: reduce){ .hero-wheel{ animation:none; } }
+@keyframes heroSpin{ to{ transform:rotate(360deg); } }
+ 
+/* ---- color-mixing loader (replaces plain spinner) ---- */
+.mix-loader{ display:flex; gap:6px; }
 .mix-loader span{
-    width:12px;
-    height:12px;
+    width:12px; height:12px;
     border-radius:50%;
     display:inline-block;
     animation:mixBounce 1s ease-in-out infinite;
 }
-
-.mix-loader span:nth-child(1){
-    background:var(--gold);
-}
-
-.mix-loader span:nth-child(2){
-    background:var(--rose);
-    animation-delay:.15s;
-}
-
-.mix-loader span:nth-child(3){
-    background:var(--forest);
-    animation-delay:.3s;
-}
-
+.mix-loader span:nth-child(1){ background:var(--gold); animation-delay:0s; }
+.mix-loader span:nth-child(2){ background:var(--rose); animation-delay:0.15s; }
+.mix-loader span:nth-child(3){ background:var(--forest); animation-delay:0.3s; }
 @keyframes mixBounce{
-
-    0%,80%,100%{
-        transform:translateY(0) scale(.85);
-        opacity:.6;
-    }
-
-    40%{
-        transform:translateY(-8px) scale(1.05);
-        opacity:1;
-    }
+    0%,80%,100%{ transform:translateY(0) scale(0.85); opacity:0.6; }
+    40%{ transform:translateY(-8px) scale(1.05); opacity:1; }
 }
-
-/* =========================
-   WELCOME MODAL
-========================= */
-
+ 
+/* ---- animated checkmark ---- */
+.check-draw{ width:14px; height:14px; }
+.check-draw circle{ fill:none; stroke:var(--forest); stroke-width:2; stroke-dasharray:69; stroke-dashoffset:69; animation:circleDraw 0.5s ease forwards; }
+.check-draw path{ fill:none; stroke:var(--forest); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:20; stroke-dashoffset:20; animation:tickDraw 0.3s ease 0.4s forwards; }
+@keyframes circleDraw{ to{ stroke-dashoffset:0; } }
+@keyframes tickDraw{ to{ stroke-dashoffset:0; } }
+ 
+/* ---- ripple ---- */
+.ripple-wrap{ position:relative; overflow:hidden; }
+.ripple{
+    position:absolute;
+    border-radius:50%;
+    background:rgba(255,255,255,0.55);
+    transform:scale(0);
+    animation:rippleAnim 0.55s ease-out;
+    pointer-events:none;
+}
+@keyframes rippleAnim{ to{ transform:scale(2.6); opacity:0; } }
+ 
+/* ---- confetti ---- */
+.confetti-piece{
+    position:fixed;
+    top:-20px;
+    width:8px; height:14px;
+    z-index:60;
+    pointer-events:none;
+    animation:confettiFall linear forwards;
+    border-radius:2px;
+}
+@keyframes confettiFall{
+    to{ transform:translateY(110vh) rotate(540deg); opacity:0.9; }
+}
+ 
+/* ---- sparkle on top pick ---- */
+.match-card.top-pick{
+    position:relative;
+    border-color:var(--gold);
+    box-shadow:0 0 0 1px var(--gold), 0 10px 24px rgba(184,137,79,0.18);
+}
+.sparkle{
+    position:absolute;
+    width:14px; height:14px;
+    color:var(--gold);
+    animation:sparkleTwinkle 1.8s ease-in-out infinite;
+}
+@keyframes sparkleTwinkle{
+    0%,100%{ opacity:0.2; transform:scale(0.7) rotate(0deg); }
+    50%{ opacity:1; transform:scale(1.1) rotate(20deg); }
+}
+ 
+/* ---- ambient floating particles ---- */
+.particle-layer{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:0;
+}
+.particle{
+    position:absolute;
+    bottom:-20px;
+    border-radius:50%;
+    opacity:0.5;
+    animation:drift linear infinite;
+}
+@keyframes drift{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    10%{ opacity:0.55; }
+    90%{ opacity:0.4; }
+    100%{ transform:translateY(-110vh) translateX(var(--drift-x, 30px)); opacity:0; }
+}
+@media (prefers-reduced-motion: reduce){ .particle{ animation:none; display:none; } }
+ 
+/* ---- bouncier page entrance ---- */
+.page.enter .card{
+    animation:cardPop 0.5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes cardPop{
+    0%{ transform:scale(0.92) translateY(16px); opacity:0; }
+    100%{ transform:scale(1) translateY(0); opacity:1; }
+}
+@media (prefers-reduced-motion: reduce){ .page.enter .card{ animation:none; } }
+ 
+/* ---- breathing CTA glow ---- */
+button.primary:not(:disabled){
+    animation:ctaBreathe 2.6s ease-in-out infinite;
+}
+@keyframes ctaBreathe{
+    0%,100%{ box-shadow:0 0 0 0 rgba(184,137,79,0); }
+    50%{ box-shadow:0 6px 18px rgba(184,137,79,0.28); }
+}
+button.primary:hover{ animation:none; }
+@media (prefers-reduced-motion: reduce){ button.primary:not(:disabled){ animation:none; } }
+ 
+/* ---- OTP box stagger pop ---- */
+.otp-boxes input{
+    animation:popIn 0.3s ease backwards;
+}
+ 
+/* ---- chip idle hover bounce ---- */
+.swatch-chip:hover{ animation:chipHover 0.4s ease; }
+@keyframes chipHover{
+    0%{ transform:translateY(0); }
+    40%{ transform:translateY(-5px) scale(1.06); }
+    100%{ transform:translateY(-2px); }
+}
+ 
+/* ---- welcome popup modal ---- */
 .modal-overlay{
     position:fixed;
     inset:0;
-    background:rgba(36,31,26,.45);
+    background:rgba(36,31,26,0.45);
     display:flex;
     align-items:center;
     justify-content:center;
     z-index:80;
     opacity:0;
     pointer-events:none;
-    transition:.25s;
+    transition:opacity 0.25s ease;
 }
-
-.modal-overlay.show{
-    opacity:1;
-    pointer-events:auto;
-}
-
+.modal-overlay.show{ opacity:1; pointer-events:auto; }
 .modal-box{
     background:var(--paper);
     border-radius:18px;
     padding:32px 28px;
     max-width:320px;
     text-align:center;
-    transform:scale(.8) translateY(10px);
+    transform:scale(0.8) translateY(10px);
     opacity:0;
-    transition:.4s cubic-bezier(.34,1.56,.64,1);
-    box-shadow:0 25px 60px rgba(0,0,0,.3);
+    transition:transform 0.4s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
+    box-shadow:0 25px 60px rgba(0,0,0,0.3);
 }
-
-.modal-overlay.show .modal-box{
-    transform:scale(1) translateY(0);
-    opacity:1;
-}
-
+.modal-overlay.show .modal-box{ transform:scale(1) translateY(0); opacity:1; }
 .modal-icon{
-    width:56px;
-    height:56px;
+    width:56px; height:56px;
     margin:0 auto 14px;
     border-radius:50%;
     background:#e7efe9;
     display:flex;
     align-items:center;
     justify-content:center;
+    animation:modalIconPop 0.5s cubic-bezier(.34,1.56,.64,1) 0.15s backwards;
 }
-
-.modal-icon svg{
-    width:28px;
-    height:28px;
-    stroke:var(--forest);
-    stroke-width:2.4;
-    fill:none;
+@keyframes modalIconPop{
+    from{ transform:scale(0); }
+    to{ transform:scale(1); }
 }
-
-/* =========================
-   MOBILE
-========================= */
-
-@media(max-width:420px){
-
-    .card{
-        padding:24px 18px;
-    }
-
-    .swatch-grid{
-        grid-template-columns:repeat(4,1fr);
-    }
-
-    .otp-boxes input{
-        width:34px;
-        height:42px;
-        font-size:16px;
-    }
-
-    .stepper-wrap{
-        padding:0 12px;
-    }
-
-    .step-label{
-        font-size:9.5px;
-    }
-
+.modal-icon svg{ width:28px; height:28px; stroke:var(--forest); stroke-width:2.4; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.modal-icon svg path{ stroke-dasharray:24; stroke-dashoffset:24; animation:tickDraw 0.35s ease 0.5s forwards; }
+.modal-box h3{ margin-bottom:6px; }
+.modal-box p{ font-size:13.5px; margin:0; }
+ 
+/* ---- thank-you page ---- */
+.thankyou-icon{
+    width:64px; height:64px;
+    margin:0 auto 16px;
+    border-radius:50%;
+    background:#f3ede0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    animation:heartBeat 1.4s ease-in-out infinite;
 }
-
+.thankyou-icon svg{ width:30px; height:30px; fill:var(--rose); }
+@keyframes heartBeat{
+    0%,100%{ transform:scale(1); }
+    25%{ transform:scale(1.12); }
+    40%{ transform:scale(0.98); }
+    55%{ transform:scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce){ .thankyou-icon{ animation:none; } }
+ 
+@media (max-width:420px){
+    .card{ padding:24px 18px; }
+    .swatch-grid{ grid-template-columns:repeat(4,1fr); }
+    .otp-boxes input{ width:34px; height:42px; font-size:16px; }
+    .stepper-wrap{ padding:0 12px; }
+    .step-label{ font-size:9.5px; }
+}
 </style>
 </head>
-
 <body>
-
-<!-- ANIMATED BACKGROUND -->
+ 
 <div class="bg-blob b1"></div>
 <div class="bg-blob b2"></div>
 <div class="bg-blob b3"></div>
-
-<div class="particle-layer" id="particleLayer"></div>
-
-<!-- STEPPER -->
-<div class="stepper-wrap">
-
+ 
+<div class="stepper-wrap" id="progressWrap">
     <div class="stepper">
-
         <div class="stepper-fill-line" id="stepperFillLine"></div>
-
         <div class="step-node" id="step-1">
-
-            <div class="step-circle">
-                <svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="8" r="4"/>
-                    <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
-                </svg>
-            </div>
-
+            <div class="step-circle"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>
             <span class="step-label">Details</span>
-
         </div>
-
-
         <div class="step-node" id="step-2">
-
-            <div class="step-circle">
-                <svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9"/>
-                    <path d="M12 3a9 9 0 000 18 4 4 0 000-8 2 2 0 010-4 4 4 0 000-6z"/>
-                </svg>
-            </div>
-
+            <div class="step-circle"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 000 18 4 4 0 000-8 2 2 0 010-4 4 4 0 000-6z"/></svg></div>
             <span class="step-label">Skin</span>
-
         </div>
-
-
         <div class="step-node" id="step-3">
-
-            <div class="step-circle">
-                <svg viewBox="0 0 24 24">
-                    <rect x="3" y="4" width="18" height="14" rx="2"/>
-                    <circle cx="8.5" cy="9.5" r="1.5"/>
-                    <path d="M21 16l-5-5-4 4-2-2-5 5"/>
-                </svg>
-            </div>
-
+            <div class="step-circle"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5-4 4-2-2-5 5"/></svg></div>
             <span class="step-label">Decor</span>
-
         </div>
-
-
         <div class="step-node" id="step-4">
-
-            <div class="step-circle">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4z"/>
-                </svg>
-            </div>
-
+            <div class="step-circle"><svg viewBox="0 0 24 24"><path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4z"/></svg></div>
             <span class="step-label">Match</span>
-
         </div>
-
     </div>
-
 </div>
-
+ 
 <div class="toast" id="toast"></div>
-
-
-<!-- WELCOME MODAL -->
-
+<div class="particle-layer" id="particleLayer"></div>
+ 
 <div class="modal-overlay" id="welcomeModal">
-
     <div class="modal-box">
-
-        <div class="modal-icon">
-
-            <svg viewBox="0 0 24 24">
-                <path d="M5 12l4.5 4.5L19 7"/>
-            </svg>
-
-        </div>
-
-        <h3>
-            Welcome,
-            <span id="modalName"></span>!
-        </h3>
-
-        <p>
-            Let's find your perfect outfit colors for the event.
-        </p>
-
+        <div class="modal-icon"><svg viewBox="0 0 24 24"><path d="M5 12l4.5 4.5L19 7"/></svg></div>
+        <h3>Welcome, <span id="modalName"></span>!</h3>
+        <p>Let's find your perfect outfit colors for the event.</p>
     </div>
-
 </div>
-
-
-<!-- TOP BAR -->
-
+ 
 <div class="topbar" id="topbar">
-
-    <div class="brand">
-        Hue &amp; <span>Occasion</span>
+    <div class="brand">Hue &amp; <span>Occasion</span></div>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <span class="who">Hi, <span id="topbarName"></span></span>
+        <button class="logout-link" onclick="logout()">Sign out</button>
     </div>
-
-    <div style="display:flex;align-items:center;gap:12px;">
-
-        <span class="who">
-            Hi,
-            <span id="topbarName"></span>
-        </span>
-
-        <button class="logout-link" onclick="logout()">
-            Sign out
-        </button>
-
-    </div>
-
 </div>
-
-
-<!-- =========================
-     LOGIN PAGE
-========================= -->
-
+ 
+<!-- ================= LOGIN PAGE ================= -->
 <div class="page active" id="loginPage">
-
     <div class="card">
-
-        <!-- COLOR WHEEL -->
-
         <svg class="hero-wheel" viewBox="0 0 100 100">
-
-            <circle
-                cx="50"
-                cy="50"
-                r="46"
-                fill="none"
-                stroke="#e4d9c6"
-                stroke-width="1"
-            />
-
-            <path
-                d="M50 50 L50 6 A44 44 0 0 1 88 28 Z"
-                fill="#b8894f"
-            />
-
-            <path
-                d="M50 50 L88 28 A44 44 0 0 1 88 72 Z"
-                fill="#a85c56"
-            />
-
-            <path
-                d="M50 50 L88 72 A44 44 0 0 1 50 94 Z"
-                fill="#8f6a3a"
-            />
-
-            <path
-                d="M50 50 L50 94 A44 44 0 0 1 12 72 Z"
-                fill="#3c5a4a"
-            />
-
-            <path
-                d="M50 50 L12 72 A44 44 0 0 1 12 28 Z"
-                fill="#6e3b5c"
-            />
-
-            <path
-                d="M50 50 L12 28 A44 44 0 0 1 50 6 Z"
-                fill="#c9a227"
-            />
-
-            <circle
-                cx="50"
-                cy="50"
-                r="14"
-                fill="#fffdf9"
-            />
-
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#e4d9c6" stroke-width="1"/>
+            <path d="M50 50 L50 6 A44 44 0 0 1 88 28 Z" fill="#b8894f"/>
+            <path d="M50 50 L88 28 A44 44 0 0 1 88 72 Z" fill="#a85c56"/>
+            <path d="M50 50 L88 72 A44 44 0 0 1 50 94 Z" fill="#8f6a3a"/>
+            <path d="M50 50 L50 94 A44 44 0 0 1 12 72 Z" fill="#3c5a4a"/>
+            <path d="M50 50 L12 72 A44 44 0 0 1 12 28 Z" fill="#6e3b5c"/>
+            <path d="M50 50 L12 28 A44 44 0 0 1 50 6 Z" fill="#c9a227"/>
+            <circle cx="50" cy="50" r="14" fill="#fffdf9"/>
         </svg>
-
-
-        <div class="eyebrow">
-            Hue &amp; Occasion
-        </div>
-
-        <h2>
-            Let's get your details
-        </h2>
-
-        <p>
-            We'll use this to personalize your outfit color recommendations for the event.
-        </p>
-
-
-        <!-- NAME -->
-
-        <label for="name">
-            Full name
-        </label>
-
-        <input
-            type="text"
-            id="name"
-            placeholder="e.g. Ananya Rao"
-        >
-
-
-        <!-- EMAIL -->
-
-        <label for="email">
-
-            Email address
-
-            <span
-                class="verified-tag"
-                id="emailVerifiedTag"
-                style="display:none;"
-            >
-                ✓ Verified
-            </span>
-
-        </label>
-
-
+        <div class="eyebrow">Hue &amp; Occasion</div>
+        <h2>Let's get your details</h2>
+        <p>We'll use this to personalize your outfit color recommendations for the event.</p>
+ 
+        <label for="name">Full name</label>
+        <input type="text" id="name" placeholder="Enter your name">
+ 
+        <label for="email">Email address <span class="verified-tag" id="emailVerifiedTag" style="display:none;"><svg class="check-draw" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M7 12l3.2 3.2L17 8.5"/></svg> Verified</span></label>
         <div class="verify-row">
-
-            <input
-                type="email"
-                id="email"
-                placeholder="you@example.com"
-            >
-
-            <button
-                type="button"
-                class="btn-verify"
-                id="emailVerifyBtn"
-                onclick="sendOtp('email')"
-            >
-                Send OTP
-            </button>
-
+            <input type="email" id="email" placeholder="you@example.com">
+            <button type="button" class="btn-verify" id="emailVerifyBtn" onclick="sendOtp('email')">Send OTP</button>
         </div>
-
-
-        <!-- EMAIL OTP -->
-
-        <div
-            class="otp-panel"
-            id="emailOtpPanel"
-        >
-
-            <div
-                class="otp-boxes"
-                id="emailOtpBoxes"
-            ></div>
-
+        <div class="otp-panel" id="emailOtpPanel">
+            <div class="otp-boxes" id="emailOtpBoxes"></div>
             <div class="otp-meta">
-
-                <span id="emailOtpTimerText">
-                    Code sent to your email
-                </span>
-
-                <button
-                    type="button"
-                    id="emailResendBtn"
-                    onclick="sendOtp('email')"
-                    disabled
-                >
-                    Resend
-                </button>
-
+                <span id="emailOtpTimerText">Code sent to your email</span>
+                <button type="button" id="emailResendBtn" onclick="sendOtp('email')" disabled>Resend</button>
             </div>
-
-            <button
-                type="button"
-                class="otp-confirm"
-                onclick="verifyOtp('email')"
-            >
-                Verify email
-            </button>
-
+            <button type="button" class="otp-confirm" onclick="verifyOtp('email')">Verify email</button>
         </div>
-
-
-        <!-- MOBILE -->
-
-        <label for="mobile">
-
-            Mobile number
-
-            <span
-                class="verified-tag"
-                id="mobileVerifiedTag"
-                style="display:none;"
-            >
-                ✓ Verified
-            </span>
-
-        </label>
-
-
+ 
+        <label for="mobile">Mobile number <span class="verified-tag" id="mobileVerifiedTag" style="display:none;"><svg class="check-draw" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M7 12l3.2 3.2L17 8.5"/></svg> Verified</span></label>
         <div class="verify-row">
-
-            <div class="mobile-combo">
-
+            <div class="mobile-combo" style="flex:1;">
                 <select id="countryCode">
-
-                    <option value="+91">
-                        🇮🇳 +91
-                    </option>
-
-                    <option value="+1">
-                        🇺🇸 +1
-                    </option>
-
-                    <option value="+44">
-                        🇬🇧 +44
-                    </option>
-
-                    <option value="+61">
-                        🇦🇺 +61
-                    </option>
-
-                    <option value="+971">
-                        🇦🇪 +971
-                    </option>
-
+                    <option value="+91" selected>🇮🇳 +91</option>
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+44">🇬🇧 +44</option>
+                    <option value="+61">🇦🇺 +61</option>
+                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+65">🇸🇬 +65</option>
+                    <option value="+49">🇩🇪 +49</option>
+                    <option value="+33">🇫🇷 +33</option>
+                    <option value="+81">🇯🇵 +81</option>
+                    <option value="+86">🇨🇳 +86</option>
+                    <option value="+27">🇿🇦 +27</option>
+                    <option value="+55">🇧🇷 +55</option>
                 </select>
-
-                <input
-                    type="tel"
-                    id="mobile"
-                    placeholder="10-digit number"
-                    maxlength="10"
-                >
-
+                <input type="tel" id="mobile" placeholder="10-digit number" maxlength="10">
             </div>
-
-
-            <button
-                type="button"
-                class="btn-verify"
-                id="mobileVerifyBtn"
-                onclick="sendOtp('mobile')"
-            >
-                Send OTP
-            </button>
-
+            <button type="button" class="btn-verify" id="mobileVerifyBtn" onclick="sendOtp('mobile')">Send OTP</button>
         </div>
-
-
-        <!-- MOBILE OTP -->
-
-        <div
-            class="otp-panel"
-            id="mobileOtpPanel"
-        >
-
-            <div
-                class="otp-boxes"
-                id="mobileOtpBoxes"
-            ></div>
-
+        <div class="otp-panel" id="mobileOtpPanel">
+            <div class="otp-boxes" id="mobileOtpBoxes"></div>
             <div class="otp-meta">
-
-                <span id="mobileOtpTimerText">
-                    Code sent to your mobile
-                </span>
-
-                <button
-                    type="button"
-                    id="mobileResendBtn"
-                    onclick="sendOtp('mobile')"
-                    disabled
-                >
-                    Resend
-                </button>
-
+                <span id="mobileOtpTimerText">Code sent to your mobile</span>
+                <button type="button" id="mobileResendBtn" onclick="sendOtp('mobile')" disabled>Resend</button>
             </div>
-
-
-            <button
-                type="button"
-                class="otp-confirm"
-                onclick="verifyOtp('mobile')"
-            >
-                Verify mobile
-            </button>
-
+            <button type="button" class="otp-confirm" onclick="verifyOtp('mobile')">Verify mobile</button>
         </div>
-
-
-        <!-- LOCATION -->
-
-        <label for="location">
-            Place / location
-        </label>
-
-        <input
-            type="text"
-            id="location"
-            placeholder="City, Country"
-        >
-
-        <button
-            type="button"
-            class="hint-btn"
-            onclick="detectLocation()"
-            style="
-                background:none;
-                border:none;
-                color:var(--gold-deep);
-                font-size:12.5px;
-                cursor:pointer;
-                padding:4px 0;
-                text-decoration:underline;
-            "
-        >
-            Use my current location instead
-        </button>
-
-
-        <div
-            class="error-text"
-            id="loginError"
-        ></div>
-
-
-        <button
-            class="primary"
-            onclick="submitLogin()"
-        >
-            Continue
-        </button>
-
+ 
+        <label for="countrySelect">Country</label>
+        <select id="countrySelect" onchange="onCountryChange()">
+            <option value="">Select country</option>
+        </select>
+ 
+        <label for="citySelect">City</label>
+        <select id="citySelect" disabled>
+            <option value="">Select country first</option>
+        </select>
+ 
+        <div class="otp-panel" id="otherCityPanel">
+            <label for="otherCity" style="margin-top:0;">Enter your city</label>
+            <input type="text" id="otherCity" placeholder="Your city name">
+        </div>
+ 
+        <div class="error-text" id="loginError"></div>
+ 
+        <button class="primary" onclick="submitLogin()">Continue</button>
     </div>
-
 </div>
-
-
-<!-- =========================
-     SKIN PAGE
-========================= -->
-
+ 
+<!-- ================= SKIN TONE PAGE ================= -->
 <div class="page" id="skinPage">
-
     <div class="card">
-
-        <div class="eyebrow">
-            Step 1 of 3
-        </div>
-
-        <h2>
-            Your complexion
-        </h2>
-
-        <p>
-            Pick the two swatches closest to your natural skin.
-        </p>
-
-
-        <div class="section-label">
-            Depth
-        </div>
-
-        <div
-            class="swatch-grid"
-            id="depthGrid"
-        ></div>
-
-        <div
-            class="swatch-caption"
-            id="depthCaption"
-        >
-            &nbsp;
-        </div>
-
-
-        <div class="section-label">
-            Undertone
-        </div>
-
-        <div
-            class="swatch-grid tone-3"
-            id="undertoneGrid"
-        ></div>
-
-        <div
-            class="swatch-caption"
-            id="undertoneCaption"
-        >
-            &nbsp;
-        </div>
-
-
-        <button
-            class="primary"
-            id="skinContinueBtn"
-            onclick="goToUpload()"
-            disabled
-        >
-            Continue
-        </button>
-
-
-        <button
-            class="ghost"
-            onclick="goToPage('loginPage')"
-        >
-            Back
-        </button>
-
+        <div class="eyebrow">Step 1 of 3</div>
+        <h2>Your complexion</h2>
+        <p>Pick the two swatches closest to your natural skin — this shapes which colors will contrast and flatter best.</p>
+ 
+        <div class="section-label">Depth</div>
+        <div class="swatch-grid" id="depthGrid"></div>
+        <div class="swatch-caption" id="depthCaption">&nbsp;</div>
+ 
+        <div class="section-label">Undertone</div>
+        <div class="swatch-grid tone-3" id="undertoneGrid"></div>
+        <div class="swatch-caption" id="undertoneCaption">&nbsp;</div>
+ 
+        <button class="primary" id="skinContinueBtn" onclick="goToUpload()" disabled>Continue</button>
+        <button class="ghost" onclick="goToPage('loginPage')">Back</button>
     </div>
-
 </div>
-
-
-<!-- =========================
-     UPLOAD PAGE
-========================= -->
-
+ 
+<!-- ================= UPLOAD PAGE ================= -->
 <div class="page" id="uploadPage">
-
     <div class="card">
-
-        <div class="eyebrow">
-            Step 2 of 3
+        <div class="eyebrow">Step 2 of 3</div>
+        <h2>Event decor photos</h2>
+        <p>Upload one or more photos of the venue, backdrop, or decor — we'll pull out the dominant colors to match your outfit against.</p>
+ 
+        <div class="upload-box" onclick="document.getElementById('imgInput').click()">
+            <strong>Click to upload</strong> — you can select multiple images
+            <input type="file" id="imgInput" hidden accept="image/*" multiple>
         </div>
-
-        <h2>
-            Event decor photos
-        </h2>
-
-        <p>
-            Upload photos of the venue, backdrop, or decor.
-            We'll use these later for color matching.
-        </p>
-
-
-        <div
-            class="upload-box"
-            onclick="document.getElementById('imgInput').click()"
-        >
-
-            <strong>
-                Click to upload
-            </strong>
-
-            — you can select multiple images
-
-            <input
-                type="file"
-                id="imgInput"
-                hidden
-                accept="image/*"
-                multiple
-            >
-
-        </div>
-
-
-        <div
-            class="thumb-grid"
-            id="thumbGrid"
-        ></div>
-
-
-        <div
-            class="error-text"
-            id="uploadError"
-        ></div>
-
-
-        <button
-            class="primary"
-            id="day3Button"
-            onclick="showDay3Message()"
-        >
-            Continue to color matching
-        </button>
-
-
-        <div
-            class="loading-row"
-            id="loadingRow"
-        >
-
-            <div class="mix-loader">
-
-                <span></span>
-                <span></span>
-                <span></span>
-
-            </div>
-
-            <span>
-                Preparing your photos…
-            </span>
-
-        </div>
-
-
-        <button
-            class="ghost"
-            onclick="goToPage('skinPage')"
-        >
-            Back
-        </button>
-
+ 
+        <div class="thumb-grid" id="thumbGrid"></div>
+        <div class="error-text" id="uploadError"></div>
+ 
+        <button class="primary" id="matchBtn" onclick="runMatch()">Find my colors</button>
+        <div class="loading-row" id="loadingRow"><div class="mix-loader"><span></span><span></span><span></span></div><span id="loadingText">Mixing your palette…</span></div>
+        <button class="ghost" onclick="goToPage('skinPage')">Back</button>
     </div>
-
 </div>
-
-
+ 
+<!-- ================= RESULTS PAGE ================= -->
+<div class="page" id="resultsPage">
+    <div class="card">
+        <div class="eyebrow">Step 3 of 3</div>
+        <h2>Your color match</h2>
+ 
+        <div class="result-block">
+            <div class="section-label">Decor palette detected</div>
+            <div class="palette-row" id="decorPalette"></div>
+        </div>
+ 
+        <div class="result-block">
+            <div class="section-label">Recommended outfit colors</div>
+            <div id="matchList"></div>
+        </div>
+ 
+        <div class="explain-box">
+            <span class="tag">Why these colors</span>
+            <p id="explainText"></p>
+        </div>
+ 
+        <div class="disclaimer">Based on color-harmony principles (complementary, analogous &amp; triadic relationships) applied to your undertone and decor palette — a styling guide, not an exact science.</div>
+ 
+        <button class="ghost" onclick="goToPage('uploadPage')">Try different photos</button>
+        <button class="ghost" onclick="goToPage('skinPage')">Change skin tone</button>
+        <button class="primary" onclick="goToPage('thankYouPage')" style="margin-top:10px;">I'm done — finish</button>
+    </div>
+</div>
+ 
+<!-- ================= THANK YOU PAGE ================= -->
+<div class="page" id="thankYouPage">
+    <div class="card" style="text-align:center;">
+        <div class="thankyou-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.5 8.4 2.3 5 5.7 5c2 0 3.4 1.1 4.3 2.4C10.9 6.1 12.3 5 14.3 5c3.4 0 5.2 3.4 3.7 6.7C19.5 16.4 12 21 12 21z"/></svg>
+        </div>
+        <h2>Thank you for visiting!</h2>
+        <p>We hope you found the perfect outfit colors for your event. Wishing you a wonderful time — you're going to look amazing.</p>
+ 
+        <button class="primary" onclick="startNewMatch()">Match another outfit</button>
+        <button class="ghost" onclick="logout()">Sign out</button>
+ 
+        <div class="disclaimer">Hue &amp; Occasion — styled with color theory, made for your special day.</div>
+    </div>
+</div>
+ 
 <script>
-
 /* =========================================================
    STATE
 ========================================================= */
-
-let skinDepth = null;
-
-let skinUndertone = null;
-
-let decorFiles = [];
-
-
-/* =========================================================
-   OTP STATE
-========================================================= */
-
+let skinDepth = null;      // {label, hex, lightnessTarget}
+let skinUndertone = null;  // {label, hex, key}
+let decorFiles = [];       // {file, url}
+let decorImages = [];      // loaded HTMLImageElement list
+ 
+/* OTP demo state (see note below — this simulates verification client-side
+   since a real SMS/email OTP requires a backend to hold provider credentials) */
 const otpState = {
-
-    email:{
-        code:null,
-        verified:false,
-        timer:null
-    },
-
-    mobile:{
-        code:null,
-        verified:false,
-        timer:null
-    }
-
+    email:  { code:null, verified:false, timer:null },
+    mobile: { code:null, verified:false, timer:null }
 };
-
-
-/* =========================================================
-   PAGE STEPS
-========================================================= */
-
-const PAGE_STEP = {
-
-    loginPage:1,
-
-    skinPage:2,
-
-    uploadPage:3,
-
-    resultsPage:4
-
-};
-
-
-/* =========================================================
-   SKIN OPTIONS
-========================================================= */
-
+ 
+const PAGE_STEP = { loginPage:1, skinPage:2, uploadPage:3, resultsPage:4 };
+ 
 const DEPTH_OPTIONS = [
-
-    {
-        key:'fair',
-        label:'Fair',
-        hex:'#f5d9c3'
-    },
-
-    {
-        key:'light',
-        label:'Light',
-        hex:'#e8bf9c'
-    },
-
-    {
-        key:'medium',
-        label:'Medium',
-        hex:'#c68863'
-    },
-
-    {
-        key:'tan',
-        label:'Tan',
-        hex:'#9a6238'
-    },
-
-    {
-        key:'deep',
-        label:'Deep',
-        hex:'#5c3a21'
-    }
-
+    { key:'fair',   label:'Fair',   hex:'#f5d9c3', lightness:82 },
+    { key:'light',  label:'Light',  hex:'#e8bf9c', lightness:70 },
+    { key:'medium', label:'Medium', hex:'#c68863', lightness:55 },
+    { key:'tan',    label:'Tan',    hex:'#9a6238', lightness:42 },
+    { key:'deep',   label:'Deep',   hex:'#5c3a21', lightness:26 }
 ];
-
-
+ 
 const UNDERTONE_OPTIONS = [
-
-    {
-        key:'warm',
-        label:'Warm',
-        hex:'#e3b16a'
-    },
-
-    {
-        key:'cool',
-        label:'Cool',
-        hex:'#cfd9e6'
-    },
-
-    {
-        key:'neutral',
-        label:'Neutral',
-        hex:'#d7c7ae'
-    }
-
+    { key:'warm',    label:'Warm',    hex:'#e3b16a' },
+    { key:'cool',    label:'Cool',    hex:'#cfd9e6' },
+    { key:'neutral', label:'Neutral', hex:'#d7c7ae' }
 ];
-
-
-/* =========================================================
-   INITIALIZE
-========================================================= */
-
-window.onload = function(){
-
-    buildSwatchGrid(
-        'depthGrid',
-        DEPTH_OPTIONS,
-        onDepthPick
-    );
-
-    buildSwatchGrid(
-        'undertoneGrid',
-        UNDERTONE_OPTIONS,
-        onUndertonePick
-    );
-
-    spawnParticles();
-
-    goToPage('loginPage');
-
+ 
+/* Country -> major cities. "Other" gives a manual fallback for anything not listed. */
+const COUNTRY_CITY_DATA = {
+    'India': ['Mumbai','Delhi','Bengaluru','Hyderabad','Chennai','Kolkata','Pune','Ahmedabad','Jaipur','Surat','Lucknow','Chandigarh'],
+    'United States': ['New York','Los Angeles','Chicago','Houston','Miami','San Francisco','Seattle','Boston','Dallas','Atlanta'],
+    'United Kingdom': ['London','Manchester','Birmingham','Edinburgh','Glasgow','Liverpool','Bristol','Leeds'],
+    'Australia': ['Sydney','Melbourne','Brisbane','Perth','Adelaide','Canberra','Gold Coast'],
+    'United Arab Emirates': ['Dubai','Abu Dhabi','Sharjah','Ajman','Al Ain'],
+    'Singapore': ['Singapore'],
+    'Germany': ['Berlin','Munich','Hamburg','Frankfurt','Cologne','Stuttgart'],
+    'France': ['Paris','Marseille','Lyon','Nice','Toulouse'],
+    'Japan': ['Tokyo','Osaka','Kyoto','Yokohama','Nagoya'],
+    'China': ['Beijing','Shanghai','Shenzhen','Guangzhou','Chengdu'],
+    'South Africa': ['Johannesburg','Cape Town','Durban','Pretoria'],
+    'Brazil': ['São Paulo','Rio de Janeiro','Brasília','Salvador'],
+    'Canada': ['Toronto','Vancouver','Montreal','Calgary','Ottawa'],
+    'Italy': ['Rome','Milan','Naples','Turin','Florence','Venice'],
+    'Spain': ['Madrid','Barcelona','Valencia','Seville'],
+    'Netherlands': ['Amsterdam','Rotterdam','The Hague','Utrecht'],
+    'Saudi Arabia': ['Riyadh','Jeddah','Mecca','Medina','Dammam'],
+    'Qatar': ['Doha','Al Rayyan'],
+    'Malaysia': ['Kuala Lumpur','Penang','Johor Bahru'],
+    'Indonesia': ['Jakarta','Surabaya','Bandung','Denpasar (Bali)'],
+    'Thailand': ['Bangkok','Chiang Mai','Phuket'],
+    'Philippines': ['Manila','Cebu','Davao'],
+    'Pakistan': ['Karachi','Lahore','Islamabad'],
+    'Bangladesh': ['Dhaka','Chittagong'],
+    'Sri Lanka': ['Colombo','Kandy'],
+    'Nepal': ['Kathmandu','Pokhara'],
+    'New Zealand': ['Auckland','Wellington','Christchurch'],
+    'Mexico': ['Mexico City','Guadalajara','Monterrey'],
+    'Egypt': ['Cairo','Alexandria','Giza'],
+    'Nigeria': ['Lagos','Abuja','Ibadan'],
+    'Kenya': ['Nairobi','Mombasa'],
+    'Russia': ['Moscow','Saint Petersburg'],
+    'Turkey': ['Istanbul','Ankara','Izmir'],
+    'South Korea': ['Seoul','Busan','Incheon'],
+    'Ireland': ['Dublin','Cork'],
+    'Switzerland': ['Zurich','Geneva','Basel'],
+    'Sweden': ['Stockholm','Gothenburg'],
+    'Norway': ['Oslo','Bergen'],
+    'Denmark': ['Copenhagen','Aarhus'],
+    'Belgium': ['Brussels','Antwerp'],
+    'Portugal': ['Lisbon','Porto'],
+    'Poland': ['Warsaw','Krakow'],
+    'Greece': ['Athens','Thessaloniki'],
+    'Israel': ['Tel Aviv','Jerusalem'],
+    'Argentina': ['Buenos Aires','Cordoba'],
+    'Kuwait': ['Kuwait City'],
+    'Oman': ['Muscat'],
+    'Bahrain': ['Manama'],
+    'Vietnam': ['Ho Chi Minh City','Hanoi'],
+    'Other': ['Other']
 };
-
-
+ 
+/* A compact fashion color-name lookup table for nearest-name matching */
+const COLOR_NAMES = [
+    ['Ivory','#fdf5e6'],['Champagne','#f0e2c1'],['Cream','#f2e9d8'],['Beige','#d9c8a9'],
+    ['Taupe','#b6a58c'],['Charcoal Grey','#3a3a3a'],['Slate Grey','#6b7280'],['Silver','#c7c7c7'],
+    ['Blush Pink','#e8b4b8'],['Rose Pink','#d98a94'],['Dusty Rose','#c79a9d'],['Coral','#e8734a'],
+    ['Terracotta','#b3542f'],['Rust Orange','#a8461f'],['Burnt Orange','#c2622a'],['Amber','#c98a1f'],
+    ['Mustard Yellow','#c9a227'],['Golden Yellow','#d9b229'],['Royal Gold','#c9a227'],['Copper','#b5651d'],
+    ['Olive','#6b6b1f'],['Sage Green','#8a9a6e'],['Mint Green','#9fd4b4'],['Emerald Green','#0f6b4c'],
+    ['Forest Green','#2f4d33'],['Teal','#1f7a72'],['Turquoise','#2fb9b0'],['Aqua','#4fc3c9'],
+    ['Sky Blue','#7bb8d9'],['Slate Blue','#5b6fa8'],['Navy Blue','#1c2b52'],['Sapphire Blue','#1f4fa0'],
+    ['Periwinkle','#8f9fd4'],['Indigo','#3f2f7a'],['Lavender','#b9a7d4'],['Plum','#6e3b5c'],
+    ['Magenta','#a8317a'],['Wine Red','#6b1f2e'],['Burgundy','#5c1a2c'],['Maroon','#611c1c'],
+    ['Ruby Red','#9c1f30'],['Crimson','#b3223d'],['Chocolate Brown','#4a2f1f'],['Espresso Brown','#3a2617']
+];
+ 
 /* =========================================================
-   FLOATING PARTICLES
+   INIT / AUTO LOGIN
 ========================================================= */
-
-function spawnParticles(){
-
-    const layer =
-        document.getElementById('particleLayer');
-
-    const colors = [
-        '#b8894f',
-        '#a85c56',
-        '#3c5a4a',
-        '#c9a227'
-    ];
-
-
-    for(let i=0;i<14;i++){
-
-        const p =
-            document.createElement('div');
-
-        p.className = 'particle';
-
-
-        const size =
-            4 + Math.random()*6;
-
-        p.style.width =
-            size + 'px';
-
-        p.style.height =
-            size + 'px';
-
-
-        p.style.left =
-            Math.random()*100 + 'vw';
-
-
-        p.style.background =
-            colors[
-                Math.floor(
-                    Math.random()*colors.length
-                )
-            ];
-
-
-        p.style.setProperty(
-            '--drift-x',
-            (Math.random()*80-40)+'px'
-        );
-
-
-        p.style.animationDuration =
-            (14+Math.random()*12)+'s';
-
-
-        p.style.animationDelay =
-            (Math.random()*14)+'s';
-
-
-        layer.appendChild(p);
-
+window.onload = function(){
+    const saved = localStorage.getItem('outfitLogin');
+    let startPage = 'loginPage';
+    if(saved){
+        try{
+            const data = JSON.parse(saved);
+            document.getElementById('topbarName').innerText = data.name;
+            document.getElementById('topbar').classList.add('show');
+            startPage = 'skinPage';
+        }catch(e){ /* corrupted, ignore and stay on login */ }
     }
-
-}
-
-
+    buildSwatchGrid('depthGrid', DEPTH_OPTIONS, onDepthPick);
+    buildSwatchGrid('undertoneGrid', UNDERTONE_OPTIONS, onUndertonePick);
+    buildCountryDropdown();
+    initRipples();
+    spawnParticles();
+    goToPage(startPage);
+};
+ 
 /* =========================================================
-   NAVIGATION
+   COUNTRY / CITY DROPDOWNS
 ========================================================= */
-
-function goToPage(id){
-
-    document
-        .querySelectorAll('.page')
-        .forEach(page=>{
-
-            page.classList.remove(
-                'active',
-                'enter'
-            );
-
-        });
-
-
-    const target =
-        document.getElementById(id);
-
-
-    target.classList.add('active');
-
-
-    requestAnimationFrame(()=>{
-
-        target.classList.add('enter');
-
+function buildCountryDropdown(){
+    const select = document.getElementById('countrySelect');
+    const countries = Object.keys(COUNTRY_CITY_DATA).filter(c => c !== 'Other').sort();
+    countries.push('Other');
+    // Put India first since it's the default market for this app
+    const idx = countries.indexOf('India');
+    if(idx > 0){ countries.splice(idx, 1); countries.unshift('India'); }
+ 
+    countries.forEach(country=>{
+        const opt = document.createElement('option');
+        opt.value = country;
+        opt.innerText = country;
+        select.appendChild(opt);
     });
-
-
-    updateProgress(id);
-
 }
-
-
-function updateProgress(id){
-
-    const step =
-        PAGE_STEP[id] || 1;
-
-
-    const percentage =
-        ((step-1)/3)*100;
-
-
-    document
-        .getElementById('stepperFillLine')
-        .style.width =
-        percentage + '%';
-
-
-    for(let i=1;i<=4;i++){
-
-        const node =
-            document.getElementById(
-                'step-'+i
-            );
-
-
-        node.classList.toggle(
-            'done',
-            i < step
-        );
-
-
-        node.classList.toggle(
-            'active',
-            i === step
-        );
-
+ 
+function onCountryChange(){
+    const country = document.getElementById('countrySelect').value;
+    const citySelect = document.getElementById('citySelect');
+    const otherPanel = document.getElementById('otherCityPanel');
+    citySelect.innerHTML = '';
+ 
+    if(!country){
+        citySelect.disabled = true;
+        citySelect.appendChild(new Option('Select country first', ''));
+        otherPanel.classList.remove('open');
+        return;
     }
-
+ 
+    citySelect.disabled = false;
+    citySelect.appendChild(new Option('Select city', ''));
+    (COUNTRY_CITY_DATA[country] || ['Other']).forEach(city=>{
+        citySelect.appendChild(new Option(city, city));
+    });
+    if(country !== 'Other'){
+        const otherOpt = new Option('Other (not listed)', 'Other');
+        citySelect.appendChild(otherOpt);
+    }
+    otherPanel.classList.remove('open');
 }
-
-
+ 
+document.addEventListener('change', function(e){
+    if(e.target && e.target.id === 'citySelect'){
+        const panel = document.getElementById('otherCityPanel');
+        panel.classList.toggle('open', e.target.value === 'Other');
+    }
+});
+ 
+/* =========================================================
+   AMBIENT PARTICLES
+========================================================= */
+function spawnParticles(){
+    const layer = document.getElementById('particleLayer');
+    const colors = ['#b8894f','#a85c56','#3c5a4a','#c9a227'];
+    for(let i=0;i<14;i++){
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = 4 + Math.random()*6;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = Math.random()*100 + 'vw';
+        p.style.background = colors[Math.floor(Math.random()*colors.length)];
+        p.style.setProperty('--drift-x', (Math.random()*80 - 40) + 'px');
+        p.style.animationDuration = (14 + Math.random()*12) + 's';
+        p.style.animationDelay = (Math.random()*14) + 's';
+        layer.appendChild(p);
+    }
+}
+ 
+/* =========================================================
+   RIPPLE CLICK EFFECT
+========================================================= */
+function initRipples(){
+    const selector = 'button.primary, .btn-verify, .otp-confirm, button.ghost, .upload-box';
+    document.querySelectorAll(selector).forEach(el=>{
+        el.classList.add('ripple-wrap');
+        el.addEventListener('click', function(e){
+            const rect = el.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            const size = Math.max(rect.width, rect.height);
+            ripple.className = 'ripple';
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+            el.appendChild(ripple);
+            setTimeout(()=> ripple.remove(), 600);
+        });
+    });
+}
+ 
+/* =========================================================
+   PAGE NAVIGATION
+========================================================= */
+function goToPage(id){
+    document.querySelectorAll('.page').forEach(p=>{
+        p.classList.remove('active','enter');
+    });
+    const target = document.getElementById(id);
+    target.classList.add('active');
+    requestAnimationFrame(()=> target.classList.add('enter'));
+    updateProgress(id);
+}
+ 
+function updateProgress(id){
+    const step = PAGE_STEP[id];
+    const wrap = document.getElementById('progressWrap');
+    if(!step){
+        wrap.style.display = 'none';
+    }else{
+        wrap.style.display = '';
+        const pct = ((step - 1) / 3) * 100;
+        document.getElementById('stepperFillLine').style.width = pct + '%';
+        for(let i=1;i<=4;i++){
+            const node = document.getElementById('step-' + i);
+            node.classList.toggle('done', i < step);
+            node.classList.toggle('active', i === step);
+        }
+    }
+    if(id === 'resultsPage' || id === 'thankYouPage') triggerConfetti();
+}
+ 
+function startNewMatch(){
+    decorFiles = [];
+    document.getElementById('thumbGrid').innerHTML = '';
+    document.getElementById('uploadError').classList.remove('show');
+    goToPage('uploadPage');
+}
+ 
+/* =========================================================
+   CONFETTI
+========================================================= */
+function triggerConfetti(){
+    const colors = ['#b8894f','#a85c56','#3c5a4a','#c9a227','#6e3b5c'];
+    for(let i=0;i<28;i++){
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random()*100 + 'vw';
+        piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+        piece.style.animationDuration = (1.8 + Math.random()*1.4) + 's';
+        piece.style.animationDelay = (Math.random()*0.4) + 's';
+        piece.style.opacity = String(0.7 + Math.random()*0.3);
+        document.body.appendChild(piece);
+        setTimeout(()=> piece.remove(), 3600);
+    }
+}
+ 
 /* =========================================================
    TOAST
 ========================================================= */
-
 let toastTimer = null;
-
-
-function showToast(message,duration){
-
-    const toast =
-        document.getElementById('toast');
-
-
-    toast.innerHTML = message;
-
-
+function showToast(html, duration){
+    const toast = document.getElementById('toast');
+    toast.innerHTML = html;
     toast.classList.add('show');
-
-
     clearTimeout(toastTimer);
-
-
-    toastTimer =
-        setTimeout(()=>{
-
-            toast.classList.remove('show');
-
-        },duration || 4000);
-
+    toastTimer = setTimeout(()=> toast.classList.remove('show'), duration || 4000);
 }
-
-
+ 
 /* =========================================================
-   OTP BOXES
+   OTP VERIFICATION (demo / client-simulated)
+   NOTE: Real SMS + email OTP delivery requires a backend that holds
+   provider credentials (e.g. Twilio, an SMTP/email API) — a secret
+   key can't live safely in code shipped to the browser. This flow
+   fully implements the UI/UX and verification logic; wire sendOtp()
+   below to your backend endpoint when one is available, and check
+   the code server-side instead of against otpState.
 ========================================================= */
-
 function buildOtpBoxes(containerId){
-
-    const container =
-        document.getElementById(containerId);
-
-
-    container.innerHTML = '';
-
-
+    const box = document.getElementById(containerId);
+    box.innerHTML = '';
     for(let i=0;i<6;i++){
-
-        const input =
-            document.createElement('input');
-
-
-        input.type = 'text';
-
-        input.inputMode = 'numeric';
-
-        input.maxLength = 1;
-
-
-        input.addEventListener(
-            'input',
-            function(){
-
-                this.value =
-                    this.value.replace(
-                        /[^0-9]/g,
-                        ''
-                    );
-
-
-                if(
-                    this.value &&
-                    this.nextElementSibling
-                ){
-
-                    this.nextElementSibling.focus();
-
-                }
-
-            }
-        );
-
-
-        input.addEventListener(
-            'keydown',
-            function(event){
-
-                if(
-                    event.key === 'Backspace' &&
-                    !this.value &&
-                    this.previousElementSibling
-                ){
-
-                    this.previousElementSibling.focus();
-
-                }
-
-            }
-        );
-
-
-        container.appendChild(input);
-
-    }
-
-}
-
-
-/* =========================================================
-   GENERATE DEMO OTP
-========================================================= */
-
-function generateOtp(){
-
-    return String(
-        Math.floor(
-            100000 +
-            Math.random()*900000
-        )
-    );
-
-}
-
-
-/* =========================================================
-   SEND OTP
-========================================================= */
-
-function sendOtp(type){
-
-    const field =
-        type === 'email'
-        ? document.getElementById('email')
-        : document.getElementById('mobile');
-
-
-    /* EMAIL VALIDATION */
-
-    if(type === 'email'){
-
-        const validEmail =
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-            .test(field.value.trim());
-
-
-        if(!validEmail){
-
-            showToast(
-                'Enter a valid email address first.'
-            );
-
-            return;
-
-        }
-
-    }
-
-
-    /* MOBILE VALIDATION */
-
-    else{
-
-        if(
-            !/^\d{7,15}$/
-            .test(field.value.trim())
-        ){
-
-            showToast(
-                'Enter a valid mobile number first.'
-            );
-
-            return;
-
-        }
-
-    }
-
-
-    const code =
-        generateOtp();
-
-
-    otpState[type].code =
-        code;
-
-    otpState[type].verified =
-        false;
-
-
-    const panel =
-        document.getElementById(
-            type+'OtpPanel'
-        );
-
-
-    panel.classList.add('open');
-
-
-    buildOtpBoxes(
-        type+'OtpBoxes'
-    );
-
-
-    document
-        .getElementById(
-            type+'OtpBoxes'
-        )
-        .querySelector('input')
-        .focus();
-
-
-    /* SHOW DEMO OTP */
-
-    const destination =
-        type === 'email'
-        ? field.value.trim()
-        : document
-            .getElementById('countryCode')
-            .value
-            + ' '
-            + field.value.trim();
-
-
-    showToast(
-
-        'Demo OTP for ' +
-        destination +
-        ': <strong>' +
-        code +
-        '</strong>',
-
-        7000
-
-    );
-
-
-    startResendTimer(type);
-
-}
-
-
-/* =========================================================
-   RESEND TIMER
-========================================================= */
-
-function startResendTimer(type){
-
-    const resend =
-        document.getElementById(
-            type+'ResendBtn'
-        );
-
-
-    const timerText =
-        document.getElementById(
-            type+'OtpTimerText'
-        );
-
-
-    resend.disabled = true;
-
-
-    let seconds = 30;
-
-
-    timerText.innerText =
-        'Resend available in ' +
-        seconds +
-        's';
-
-
-    clearInterval(
-        otpState[type].timer
-    );
-
-
-    otpState[type].timer =
-        setInterval(()=>{
-
-            seconds--;
-
-
-            if(seconds <= 0){
-
-                clearInterval(
-                    otpState[type].timer
-                );
-
-
-                timerText.innerText =
-                    "Didn't get it?";
-
-
-                resend.disabled = false;
-
-            }
-
-            else{
-
-                timerText.innerText =
-                    'Resend available in ' +
-                    seconds +
-                    's';
-
-            }
-
-        },1000);
-
-}
-
-
-/* =========================================================
-   VERIFY OTP
-========================================================= */
-
-function verifyOtp(type){
-
-    const boxes =
-        Array.from(
-            document.querySelectorAll(
-                '#'+type+'OtpBoxes input'
-            )
-        );
-
-
-    const entered =
-        boxes
-        .map(box=>box.value)
-        .join('');
-
-
-    if(
-        entered.length < 6 ||
-        entered !== otpState[type].code
-    ){
-
-        boxes.forEach(box=>{
-
-            box.classList.add('shake');
-
-
-            setTimeout(()=>{
-
-                box.classList.remove('shake');
-
-            },350);
-
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.inputMode = 'numeric';
+        inp.maxLength = 1;
+        inp.style.animationDelay = (i * 0.05) + 's';
+        inp.addEventListener('input', function(){
+            this.value = this.value.replace(/[^0-9]/g,'');
+            if(this.value && this.nextElementSibling) this.nextElementSibling.focus();
         });
-
-
-        showToast(
-            "That code doesn't match — check again."
-        );
-
-
-        return;
-
+        inp.addEventListener('keydown', function(e){
+            if(e.key === 'Backspace' && !this.value && this.previousElementSibling){
+                this.previousElementSibling.focus();
+            }
+        });
+        box.appendChild(inp);
     }
-
-
-    otpState[type].verified =
-        true;
-
-
-    clearInterval(
-        otpState[type].timer
-    );
-
-
-    document
-        .getElementById(
-            type+'OtpPanel'
-        )
-        .classList.remove('open');
-
-
-    document
-        .getElementById(
-            type+'VerifiedTag'
-        )
-        .style.display =
-        'inline-flex';
-
-
-    const button =
-        document.getElementById(
-            type+'VerifyBtn'
-        );
-
-
-    button.innerText =
-        'Verified';
-
-
-    button.classList.add(
-        'verified'
-    );
-
-
-    button.disabled = true;
-
-
-    document
-        .getElementById(
-            type === 'email'
-            ? 'email'
-            : 'mobile'
-        )
-        .disabled = true;
-
-
-    if(type === 'mobile'){
-
-        document
-            .getElementById('countryCode')
-            .disabled = true;
-
-    }
-
-
-    showToast(
-        type === 'email'
-        ? 'Email verified ✓'
-        : 'Mobile number verified ✓',
-        2500
-    );
-
 }
-
-
+ 
+function generateOtp(){
+    return String(Math.floor(100000 + Math.random()*900000));
+}
+ 
+function sendOtp(type){
+    const field = type === 'email' ? document.getElementById('email') : document.getElementById('mobile');
+    if(type === 'email'){
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value.trim())){
+            showToast('Enter a valid email address first.');
+            return;
+        }
+    }else{
+        if(!/^\d{7,15}$/.test(field.value.trim())){
+            showToast('Enter a valid mobile number first.');
+            return;
+        }
+    }
+ 
+    const code = generateOtp();
+    otpState[type].code = code;
+    otpState[type].verified = false;
+ 
+    const panel = document.getElementById(type + 'OtpPanel');
+    panel.classList.add('open');
+    buildOtpBoxes(type + 'OtpBoxes');
+    document.getElementById(type + 'OtpBoxes').querySelector('input').focus();
+ 
+    const dest = type === 'email' ? field.value.trim() : ('+' + document.getElementById('countryCode').value.replace('+','') + ' ' + field.value.trim());
+    showToast('Demo mode — no real ' + (type==='email'?'email':'SMS') + ' sent. Your OTP for ' + dest + ' is <strong>' + code + '</strong>', 7000);
+ 
+    startResendTimer(type);
+}
+ 
+function startResendTimer(type){
+    const resendBtn = document.getElementById(type + 'ResendBtn');
+    const timerText = document.getElementById(type + 'OtpTimerText');
+    resendBtn.disabled = true;
+    let seconds = 30;
+    timerText.innerText = 'Resend available in ' + seconds + 's';
+    clearInterval(otpState[type].timer);
+    otpState[type].timer = setInterval(()=>{
+        seconds--;
+        if(seconds <= 0){
+            clearInterval(otpState[type].timer);
+            timerText.innerText = "Didn't get it?";
+            resendBtn.disabled = false;
+        }else{
+            timerText.innerText = 'Resend available in ' + seconds + 's';
+        }
+    }, 1000);
+}
+ 
+function verifyOtp(type){
+    const boxes = Array.from(document.querySelectorAll('#' + type + 'OtpBoxes input'));
+    const entered = boxes.map(b=>b.value).join('');
+ 
+    if(entered.length < 6 || entered !== otpState[type].code){
+        boxes.forEach(b=>{
+            b.classList.add('shake');
+            setTimeout(()=> b.classList.remove('shake'), 350);
+        });
+        showToast('That code doesn\'t match — check and try again.');
+        return;
+    }
+ 
+    otpState[type].verified = true;
+    clearInterval(otpState[type].timer);
+ 
+    document.getElementById(type + 'OtpPanel').classList.remove('open');
+    document.getElementById(type + 'VerifiedTag').style.display = 'inline-flex';
+    const btn = document.getElementById(type + 'VerifyBtn');
+    btn.innerText = 'Verified';
+    btn.classList.add('verified');
+    btn.disabled = true;
+    document.getElementById(type === 'email' ? 'email' : 'mobile').disabled = true;
+    if(type === 'mobile') document.getElementById('countryCode').disabled = true;
+ 
+    showToast(type === 'email' ? 'Email verified ✓' : 'Mobile number verified ✓', 2500);
+}
+ 
 /* =========================================================
    LOGIN
 ========================================================= */
-
 function submitLogin(){
-
-    const name =
-        document
-        .getElementById('name')
-        .value
-        .trim();
-
-
-    const email =
-        document
-        .getElementById('email')
-        .value
-        .trim();
-
-
-    const mobile =
-        document
-        .getElementById('mobile')
-        .value
-        .trim();
-
-
-    const location =
-        document
-        .getElementById('location')
-        .value
-        .trim();
-
-
-    const error =
-        document
-        .getElementById('loginError');
-
-
-    if(
-        !name ||
-        !email ||
-        !mobile ||
-        !location
-    ){
-
-        error.innerText =
-            'Please fill in every field.';
-
-        error.classList.add('show');
-
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const mobile = document.getElementById('mobile').value.trim();
+    const countryCode = document.getElementById('countryCode').value;
+    const country = document.getElementById('countrySelect').value;
+    const citySelectVal = document.getElementById('citySelect').value;
+    const otherCity = document.getElementById('otherCity').value.trim();
+    const city = citySelectVal === 'Other' ? otherCity : citySelectVal;
+    const errBox = document.getElementById('loginError');
+ 
+    if(!name || !email || !mobile || !country || !citySelectVal || (citySelectVal === 'Other' && !otherCity)){
+        errBox.innerText = 'Please fill in every field.';
+        errBox.classList.add('show');
         return;
-
     }
-
-
     if(!otpState.email.verified){
-
-        error.innerText =
-            'Please verify your email with the OTP.';
-
-        error.classList.add('show');
-
+        errBox.innerText = 'Please verify your email with the OTP sent to it.';
+        errBox.classList.add('show');
         return;
-
     }
-
-
     if(!otpState.mobile.verified){
-
-        error.innerText =
-            'Please verify your mobile number with the OTP.';
-
-        error.classList.add('show');
-
+        errBox.innerText = 'Please verify your mobile number with the OTP sent to it.';
+        errBox.classList.add('show');
         return;
-
     }
-
-
-    error.classList.remove('show');
-
-
-    const firstName =
-        name.split(' ')[0];
-
-
-    localStorage.setItem(
-
-        'outfitLogin',
-
-        JSON.stringify({
-
-            name:firstName,
-
-            fullName:name,
-
-            email:email,
-
-            mobile:mobile,
-
-            location:location,
-
-            savedAt:Date.now()
-
-        })
-
-    );
-
-
-    document
-        .getElementById('topbarName')
-        .innerText =
-        firstName;
-
-
-    document
-        .getElementById('topbar')
-        .classList.add('show');
-
-
+    errBox.classList.remove('show');
+ 
+    const firstName = name.split(' ')[0];
+    const record = {
+        name:firstName, fullName:name, email,
+        mobile: countryCode + ' ' + mobile,
+        location: city + ', ' + country, savedAt:Date.now()
+    };
+    localStorage.setItem('outfitLogin', JSON.stringify(record));
+ 
+    document.getElementById('topbarName').innerText = firstName;
+    document.getElementById('topbar').classList.add('show');
     showWelcomeModal(firstName);
-
 }
-
-
-/* =========================================================
-   WELCOME
-========================================================= */
-
+ 
 function showWelcomeModal(firstName){
-
-    document
-        .getElementById('modalName')
-        .innerText =
-        firstName;
-
-
-    const modal =
-        document.getElementById(
-            'welcomeModal'
-        );
-
-
+    document.getElementById('modalName').innerText = firstName;
+    const modal = document.getElementById('welcomeModal');
     modal.classList.add('show');
-
-
     setTimeout(()=>{
-
         modal.classList.remove('show');
-
         goToPage('skinPage');
-
-    },1600);
-
+    }, 1600);
 }
-
-
-/* =========================================================
-   LOCATION
-========================================================= */
-
-function detectLocation(){
-
-    if(!navigator.geolocation){
-
-        showToast(
-            'Location is not available in this browser.'
-        );
-
-        return;
-
-    }
-
-
-    navigator.geolocation.getCurrentPosition(
-
-        function(position){
-
-            const lat =
-                position.coords.latitude
-                .toFixed(3);
-
-
-            const lon =
-                position.coords.longitude
-                .toFixed(3);
-
-
-            document
-                .getElementById('location')
-                .value =
-                'Lat '+lat+
-                ', Lon '+lon;
-
-        },
-
-
-        function(){
-
-            showToast(
-                'Could not detect location. Please enter it manually.'
-            );
-
-        }
-
-    );
-
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
+ 
 function logout(){
-
-    localStorage.removeItem(
-        'outfitLogin'
-    );
-
+    localStorage.removeItem('outfitLogin');
     location.reload();
-
 }
-
-
+ 
 /* =========================================================
-   BUILD SWATCHES
+   SKIN TONE SWATCHES
 ========================================================= */
-
-function buildSwatchGrid(
-    containerId,
-    options,
-    onPick
-){
-
-    const grid =
-        document.getElementById(
-            containerId
-        );
-
-
+function buildSwatchGrid(containerId, options, onPick){
+    const grid = document.getElementById(containerId);
     grid.innerHTML = '';
-
-
-    options.forEach((option,index)=>{
-
-        const chip =
-            document.createElement('div');
-
-
-        chip.className =
-            'swatch-chip';
-
-
-        chip.style.background =
-            option.hex;
-
-
-        chip.style.animationDelay =
-            (index*.05)+'s';
-
-
-        chip.title =
-            option.label;
-
-
-        chip.onclick =
-            function(){
-
-                onPick(
-                    option,
-                    chip
-                );
-
-            };
-
-
+    options.forEach((opt, idx)=>{
+        const chip = document.createElement('div');
+        chip.className = 'swatch-chip';
+        chip.style.background = opt.hex;
+        chip.style.animationDelay = (idx * 0.05) + 's';
+        chip.title = opt.label;
+        chip.onclick = function(){ onPick(opt, chip); };
         grid.appendChild(chip);
-
     });
-
 }
-
-
-/* =========================================================
-   DEPTH PICK
-========================================================= */
-
-function onDepthPick(
-    option,
-    chip
-){
-
-    document
-        .querySelectorAll(
-            '#depthGrid .swatch-chip'
-        )
-        .forEach(item=>{
-
-            item.classList.remove(
-                'active'
-            );
-
-        });
-
-
-    chip.classList.add('active');
-
-
-    skinDepth =
-        option;
-
-
-    document
-        .getElementById(
-            'depthCaption'
-        )
-        .innerText =
-        option.label;
-
-
+ 
+function onDepthPick(opt, chipEl){
+    document.querySelectorAll('#depthGrid .swatch-chip').forEach(c=>c.classList.remove('active'));
+    chipEl.classList.add('active');
+    skinDepth = opt;
+    document.getElementById('depthCaption').innerText = opt.label;
     checkSkinReady();
-
 }
-
-
-/* =========================================================
-   UNDERTONE PICK
-========================================================= */
-
-function onUndertonePick(
-    option,
-    chip
-){
-
-    document
-        .querySelectorAll(
-            '#undertoneGrid .swatch-chip'
-        )
-        .forEach(item=>{
-
-            item.classList.remove(
-                'active'
-            );
-
-        });
-
-
-    chip.classList.add('active');
-
-
-    skinUndertone =
-        option;
-
-
-    document
-        .getElementById(
-            'undertoneCaption'
-        )
-        .innerText =
-        option.label;
-
-
+ 
+function onUndertonePick(opt, chipEl){
+    document.querySelectorAll('#undertoneGrid .swatch-chip').forEach(c=>c.classList.remove('active'));
+    chipEl.classList.add('active');
+    skinUndertone = opt;
+    document.getElementById('undertoneCaption').innerText = opt.label;
     checkSkinReady();
-
 }
-
-
-/* =========================================================
-   CHECK SKIN
-========================================================= */
-
+ 
 function checkSkinReady(){
-
-    document
-        .getElementById(
-            'skinContinueBtn'
-        )
-        .disabled =
-        !(skinDepth && skinUndertone);
-
+    document.getElementById('skinContinueBtn').disabled = !(skinDepth && skinUndertone);
 }
-
-
-/* =========================================================
-   GO TO UPLOAD
-========================================================= */
-
+ 
 function goToUpload(){
-
-    goToPage(
-        'uploadPage'
-    );
-
+    goToPage('uploadPage');
 }
-
-
+ 
 /* =========================================================
-   IMAGE UPLOAD
+   UPLOAD + PREVIEW
 ========================================================= */
-
-const imgInput =
-    document.getElementById(
-        'imgInput'
-    );
-
-
-imgInput.addEventListener(
-    'change',
-    async function(){
-
-        const error =
-            document.getElementById(
-                'uploadError'
-            );
-
-
-        const files =
-            Array.from(
-                imgInput.files
-            );
-
-
-        imgInput.value = '';
-
-
-        let skipped = 0;
-
-
-        for(const file of files){
-
-            if(
-                !file.type.startsWith(
-                    'image/'
-                )
-            ){
-
-                skipped++;
-
-                continue;
-
-            }
-
-
-            try{
-
-                const url =
-                    await readFileAsDataUrl(
-                        file
-                    );
-
-
-                decorFiles.push({
-
-                    file:file,
-
-                    url:url
-
-                });
-
-
-                renderThumbs();
-
-            }
-
-
-            catch(error){
-
-                skipped++;
-
-            }
-
-        }
-
-
-        if(decorFiles.length > 0){
-
-            error.classList.remove(
-                'show'
-            );
-
-        }
-
-
-        else if(skipped > 0){
-
-            error.innerText =
-                'Please select JPG, PNG, WEBP or another image file.';
-
-            error.classList.add(
-                'show'
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   READ IMAGE
-========================================================= */
-
+const imgInput = document.getElementById('imgInput');
+const IMAGE_EXT_RE = /\.(jpe?g|png|webp|gif|bmp|heic|heif|avif|tiff?)$/i;
+ 
+function looksLikeImage(file){
+    if(file.type && file.type.startsWith('image/')) return true;
+    if(!file.type && IMAGE_EXT_RE.test(file.name || '')) return true; // some pickers omit MIME type
+    return false;
+}
+ 
 function readFileAsDataUrl(file){
-
-    return new Promise(
-        (resolve,reject)=>{
-
-            const reader =
-                new FileReader();
-
-
-            reader.onload =
-                ()=>{
-                    resolve(
-                        reader.result
-                    );
-                };
-
-
-            reader.onerror =
-                ()=>{
-                    reject(
-                        new Error(
-                            'Could not read file'
-                        )
-                    );
-                };
-
-
-            reader.readAsDataURL(
-                file
-            );
-
+    return new Promise((resolve, reject)=>{
+        const reader = new FileReader();
+        reader.onload = ()=> resolve(reader.result);
+        reader.onerror = ()=> reject(new Error('Could not read file'));
+        reader.readAsDataURL(file);
+    });
+}
+ 
+imgInput.addEventListener('change', async function(){
+    const uploadErr = document.getElementById('uploadError');
+    const picked = Array.from(imgInput.files);
+    imgInput.value = '';
+ 
+    let skipped = 0;
+    for(const file of picked){
+        if(!looksLikeImage(file)){ skipped++; continue; }
+        try{
+            const url = await readFileAsDataUrl(file);
+            decorFiles.push({ file, url });
+            renderThumbs(); // progressive render as each finishes
+        }catch(e){
+            skipped++;
         }
-    );
-
-}
-
-
-/* =========================================================
-   SHOW THUMBNAILS
-========================================================= */
-
-function renderThumbs(){
-
-    const grid =
-        document.getElementById(
-            'thumbGrid'
-        );
-
-
-    grid.innerHTML = '';
-
-
-    decorFiles.forEach(
-        (item,index)=>{
-
-            const thumb =
-                document.createElement(
-                    'div'
-                );
-
-
-            thumb.className =
-                'thumb';
-
-
-            thumb.style.animationDelay =
-                (index*.06)+'s';
-
-
-            const image =
-                document.createElement(
-                    'img'
-                );
-
-
-            image.src =
-                item.url;
-
-
-            const remove =
-                document.createElement(
-                    'button'
-                );
-
-
-            remove.innerText =
-                '✕';
-
-
-            remove.onclick =
-                function(){
-
-                    removeThumb(index);
-
-                };
-
-
-            thumb.appendChild(image);
-
-            thumb.appendChild(remove);
-
-            grid.appendChild(thumb);
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   REMOVE IMAGE
-========================================================= */
-
-function removeThumb(index){
-
-    decorFiles.splice(
-        index,
-        1
-    );
-
-
-    renderThumbs();
-
-}
-
-
-/* =========================================================
-   DAY 2 → DAY 3 PLACEHOLDER
-========================================================= */
-
-function showDay3Message(){
-
-    const error =
-        document.getElementById(
-            'uploadError'
-        );
-
-
-    if(decorFiles.length === 0){
-
-        error.innerText =
-            'Please upload at least one decor photo first.';
-
-        error.classList.add(
-            'show'
-        );
-
-        return;
-
     }
-
-
-    error.classList.remove(
-        'show'
-    );
-
-
-    showToast(
-        'Day 2 complete! 🎨 Color matching will be added on Day 3.',
-        5000
-    );
-
+ 
+    if(decorFiles.length > 0){
+        uploadErr.classList.remove('show');
+    }else if(skipped > 0){
+        uploadErr.innerText = "Those files didn't look like images — try a JPG, PNG, or HEIC photo.";
+        uploadErr.classList.add('show');
+    }
+});
+ 
+function renderThumbs(){
+    const grid = document.getElementById('thumbGrid');
+    grid.innerHTML = '';
+    decorFiles.forEach((item, idx)=>{
+        const thumb = document.createElement('div');
+        thumb.className = 'thumb';
+        thumb.style.animationDelay = (idx * 0.06) + 's';
+ 
+        const img = document.createElement('img');
+        img.src = item.url;
+        img.onerror = function(){
+            thumb.classList.add('thumb-error');
+            thumb.innerHTML =
+                '<div class="thumb-error-msg">Can\'t preview this format<br>try JPG or PNG</div>' +
+                '<button onclick="removeThumb(' + idx + ')">✕</button>';
+        };
+ 
+        const removeBtn = document.createElement('button');
+        removeBtn.innerText = '✕';
+        removeBtn.onclick = ()=> removeThumb(idx);
+ 
+        thumb.appendChild(img);
+        thumb.appendChild(removeBtn);
+        grid.appendChild(thumb);
+    });
 }
-
+ 
+function removeThumb(idx){
+    decorFiles.splice(idx, 1);
+    renderThumbs();
+}
+ 
+/* =========================================================
+   COLOR SCIENCE HELPERS
+========================================================= */
+function rgbToHsl(r, g, b){
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r,g,b), min = Math.min(r,g,b);
+    let h, s, l = (max + min) / 2;
+    if(max === min){
+        h = s = 0;
+    }else{
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch(max){
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            default: h = (r - g) / d + 4;
+        }
+        h *= 60;
+    }
+    return { h, s: s*100, l: l*100 };
+}
+ 
+function hslToHex(h, s, l){
+    h = ((h % 360) + 360) % 360;
+    s /= 100; l /= 100;
+    const c = (1 - Math.abs(2*l - 1)) * s;
+    const x = c * (1 - Math.abs((h/60) % 2 - 1));
+    const m = l - c/2;
+    let r=0,g=0,b=0;
+    if(h < 60){ r=c; g=x; b=0; }
+    else if(h < 120){ r=x; g=c; b=0; }
+    else if(h < 180){ r=0; g=c; b=x; }
+    else if(h < 240){ r=0; g=x; b=c; }
+    else if(h < 300){ r=x; g=0; b=c; }
+    else{ r=c; g=0; b=x; }
+    const toHex = v => Math.round((v+m)*255).toString(16).padStart(2,'0');
+    return '#' + toHex(r) + toHex(g) + toHex(b);
+}
+ 
+function hexToRgb(hex){
+    const n = parseInt(hex.replace('#',''), 16);
+    return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
+}
+ 
+function nearestColorName(hex){
+    const rgb = hexToRgb(hex);
+    let best = null, bestDist = Infinity;
+    COLOR_NAMES.forEach(([name, nhex])=>{
+        const c = hexToRgb(nhex);
+        const dist = Math.pow(rgb.r-c.r,2) + Math.pow(rgb.g-c.g,2) + Math.pow(rgb.b-c.b,2);
+        if(dist < bestDist){ bestDist = dist; best = name; }
+    });
+    return best;
+}
+ 
+/* =========================================================
+   DOMINANT COLOR EXTRACTION (canvas histogram)
+========================================================= */
+function loadImage(url){
+    return new Promise((resolve, reject)=>{
+        const img = new Image();
+        img.onload = ()=> resolve(img);
+        img.onerror = ()=> reject(new Error('Could not load image'));
+        img.src = url;
+    });
+}
+ 
+function extractHistogram(img){
+    const size = 60;
+    const canvas = document.createElement('canvas');
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, size, size);
+    const data = ctx.getImageData(0, 0, size, size).data;
+ 
+    const buckets = {};
+    for(let i=0; i<data.length; i+=4){
+        const a = data[i+3];
+        if(a < 120) continue;
+        const r = data[i], g = data[i+1], b = data[i+2];
+        const key = [Math.floor(r/32), Math.floor(g/32), Math.floor(b/32)].join(',');
+        if(!buckets[key]) buckets[key] = { count:0, r:0, g:0, b:0 };
+        buckets[key].count++;
+        buckets[key].r += r; buckets[key].g += g; buckets[key].b += b;
+    }
+    return buckets;
+}
+ 
+function mergeHistograms(histList){
+    const merged = {};
+    histList.forEach(hist=>{
+        Object.keys(hist).forEach(key=>{
+            if(!merged[key]) merged[key] = { count:0, r:0, g:0, b:0 };
+            merged[key].count += hist[key].count;
+            merged[key].r += hist[key].r;
+            merged[key].g += hist[key].g;
+            merged[key].b += hist[key].b;
+        });
+    });
+    return merged;
+}
+ 
+function topColorsFromHistogram(hist, n){
+    const entries = Object.values(hist).map(b=>({
+        count: b.count,
+        r: Math.round(b.r / b.count),
+        g: Math.round(b.g / b.count),
+        b: Math.round(b.b / b.count)
+    }));
+    entries.sort((a,b)=> b.count - a.count);
+    return entries.slice(0, n).map(e=>{
+        const toHex = v => v.toString(16).padStart(2,'0');
+        return '#' + toHex(e.r) + toHex(e.g) + toHex(e.b);
+    });
+}
+ 
+function pickAccentColor(hist){
+    // Prefer the most saturated color among the top buckets by frequency,
+    // so a vivid decor accent (not just a beige wall) drives the harmony.
+    const entries = Object.values(hist).map(b=>({
+        count: b.count,
+        r: Math.round(b.r / b.count),
+        g: Math.round(b.g / b.count),
+        b: Math.round(b.b / b.count)
+    }));
+    entries.sort((a,b)=> b.count - a.count);
+    const topN = entries.slice(0, 12);
+    let best = topN[0], bestScore = -1;
+    topN.forEach(e=>{
+        const hsl = rgbToHsl(e.r, e.g, e.b);
+        const score = hsl.s * Math.sqrt(e.count); // weight saturation + frequency
+        if(score > bestScore){ bestScore = score; best = e; }
+    });
+    const toHex = v => v.toString(16).padStart(2,'0');
+    return '#' + toHex(best.r) + toHex(best.g) + toHex(best.b);
+}
+ 
+/* =========================================================
+   COLOR THEORY ENGINE
+========================================================= */
+function computeOutfitContrastLightness(skinLightness){
+    // Aim for outfit lightness that reads as a clear, flattering contrast
+    // against the skin depth, clamped to a wearable fashion range.
+    let target;
+    if(skinLightness > 65) target = 38;       // fair skin -> deeper jewel tones pop
+    else if(skinLightness > 45) target = 48;  // medium skin -> mid-depth tones
+    else target = 58;                          // deep skin -> brighter, lighter tones pop
+    return target;
+}
+ 
+function harmonyOffsetsForUndertone(key){
+    if(key === 'warm')    return { type:'analogous',        offsets:[-30, 0, 30] };
+    if(key === 'cool')    return { type:'complementary / split-complementary', offsets:[180, 150, 210] };
+    return { type:'triadic', offsets:[0, 120, 240] };
+}
+ 
+function buildRecommendations(decorHex, depth, undertone){
+    const decorHsl = rgbToHsl(...Object.values(hexToRgb(decorHex)));
+    const harmony = harmonyOffsetsForUndertone(undertone.key);
+    const targetLightness = computeOutfitContrastLightness(depth.lightness);
+ 
+    const seenNames = new Set();
+    const results = [];
+    for(const offset of harmony.offsets){
+        let hue = decorHsl.h + offset;
+        // For warm undertones, bias hue toward the warm sector (0-70 or 300-360) if it drifted cool
+        if(undertone.key === 'warm' && hue > 90 && hue < 260){
+            hue = hue < 175 ? 45 : 320;
+        }
+        const sat = 55 + (undertone.key === 'cool' ? 10 : 0);
+        const hex = hslToHex(hue, Math.min(sat, 78), targetLightness);
+        const name = nearestColorName(hex);
+        if(seenNames.has(name)) continue;
+        seenNames.add(name);
+        results.push({ hex, name });
+        if(results.length === 3) break;
+    }
+    // Fallback fill if de-duping left us short
+    let fallbackOffset = 60;
+    while(results.length < 3){
+        const hex = hslToHex(decorHsl.h + fallbackOffset, 60, targetLightness);
+        const name = nearestColorName(hex);
+        if(!seenNames.has(name)){
+            seenNames.add(name);
+            results.push({ hex, name });
+        }
+        fallbackOffset += 45;
+        if(fallbackOffset > 360) break;
+    }
+    return { results, harmonyType: harmony.type };
+}
+ 
+/* =========================================================
+   RUN MATCH
+========================================================= */
+async function runMatch(){
+    const errBox = document.getElementById('uploadError');
+    if(decorFiles.length === 0){
+        errBox.innerText = 'Please upload at least one decor photo.';
+        errBox.classList.add('show');
+        return;
+    }
+    errBox.classList.remove('show');
+ 
+    document.getElementById('matchBtn').disabled = true;
+    document.getElementById('loadingRow').classList.add('show');
+ 
+    try{
+        const settled = await Promise.allSettled(decorFiles.map(f => loadImage(f.url)));
+        const images = settled.filter(r => r.status === 'fulfilled').map(r => r.value);
+ 
+        if(images.length === 0){
+            errBox.innerText = 'None of those photos could be read — please try different image files.';
+            errBox.classList.add('show');
+            return;
+        }
+ 
+        const histograms = images.map(extractHistogram);
+        const merged = mergeHistograms(histograms);
+ 
+        const decorPalette = topColorsFromHistogram(merged, 5);
+        const accentColor = pickAccentColor(merged);
+ 
+        const { results, harmonyType } = buildRecommendations(accentColor, skinDepth, skinUndertone);
+ 
+        renderResults(decorPalette, accentColor, results, harmonyType);
+        goToPage('resultsPage');
+    }catch(err){
+        errBox.innerText = 'Something went wrong reading those images — please try different photos.';
+        errBox.classList.add('show');
+        console.error(err);
+    }finally{
+        document.getElementById('matchBtn').disabled = false;
+        document.getElementById('loadingRow').classList.remove('show');
+    }
+}
+ 
+/* =========================================================
+   RENDER RESULTS
+========================================================= */
+function renderResults(decorPalette, accentColor, matches, harmonyType){
+    const paletteRow = document.getElementById('decorPalette');
+    paletteRow.innerHTML = '';
+    decorPalette.forEach((hex, idx)=>{
+        const sw = document.createElement('div');
+        sw.className = 'mini-swatch';
+        sw.style.background = hex;
+        sw.style.animationDelay = (idx * 0.06) + 's';
+        sw.title = hex;
+        paletteRow.appendChild(sw);
+    });
+ 
+    const matchList = document.getElementById('matchList');
+    matchList.innerHTML = '';
+    matches.forEach((m, idx)=>{
+        const row = document.createElement('div');
+        row.className = 'match-card' + (idx === 0 ? ' top-pick' : '');
+        row.style.animationDelay = (idx * 0.12) + 's';
+        row.innerHTML =
+            (idx === 0 ? '<svg class="sparkle" style="top:-6px;right:10px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4z"/></svg>' +
+             '<svg class="sparkle" style="bottom:-4px;right:34px;width:9px;height:9px;animation-delay:0.6s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4z"/></svg>' : '') +
+            '<div class="match-swatch" style="background:' + m.hex + '"></div>' +
+            '<div class="match-info">' +
+                '<h3>' + m.name + '</h3>' +
+                '<div class="hexcode">' + m.hex.toUpperCase() + '</div>' +
+                (idx === 0 ? '<span class="match-badge">Top pick</span>' : '') +
+            '</div>';
+        matchList.appendChild(row);
+    });
+ 
+    const decorName = nearestColorName(accentColor);
+    const topName = matches[0].name;
+    const explain = document.getElementById('explainText');
+    explain.innerText =
+        'You picked a ' + skinDepth.label.toLowerCase() + ' complexion with ' + skinUndertone.label.toLowerCase() +
+        ' undertones, and your decor photos are led by ' + decorName.toLowerCase() + ' tones. ' +
+        'A ' + harmonyType + ' pairing gives the most flattering contrast here, which is why ' + topName +
+        ' is the top pick — the other two options offer variety while keeping the same balance between your skin tone and the event backdrop.';
+}
 </script>
-
+ 
 </body>
 </html>
